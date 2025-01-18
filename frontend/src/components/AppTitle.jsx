@@ -7,7 +7,7 @@ const AppTitle = ({ iconSize = 22, textSize = 18 }) => {
     return (
         <div className="flex items-center" style={{ gap: `${gapItem}px` }}>
             <div
-                className="relative flex items-center justify-center bg-lime-400 rounded-full"
+                className="relative flex items-center justify-center bg-neonGreen rounded-full"
                 style={{ width: `${iconSize}px`, height: `${iconSize}px` }}
             >
                 <div

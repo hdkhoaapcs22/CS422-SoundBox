@@ -5,3 +5,7 @@
 .clip-triangle {
     clip-path: polygon(20% 0%, 100% 50%, 20% 100%);
 }
+
+a.active {
+    color: rgb(182, 255, 82);
+}

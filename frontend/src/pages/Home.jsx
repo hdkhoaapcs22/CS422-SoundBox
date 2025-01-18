@@ -1,12 +1,7 @@
 import React from "react";
-import AppTitle from "../components/AppTitle";
 
 const Home = () => {
-    return (
-        <div>
-            <AppTitle />
-        </div>
-    );
+    return <div> Home</div>;
 };
 
 export default Home;
