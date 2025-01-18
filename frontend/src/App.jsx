@@ -16,7 +16,7 @@ import { Routes, Route } from "react-router-dom";
 
 const App = () => {
     return (
-        <div className="h-screen bg-gradient-to-br from-[#031b47] to-[#0033a1]">
+        <div className="px-10 h-screen bg-gradient-to-br from-[#031b47] to-[#0033a1]">
             <ToastContainer />
             <Routes>
                 <Route path="/" element={<Home />} />
