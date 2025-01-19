@@ -1,10 +1,39 @@
-import { comments } from "../../assets/assets";
-import { MdChevronLeft, MdChevronRight } from "react-icons/md";
 import { FaArrowRightLong, FaArrowLeftLong } from "react-icons/fa6";
+import assets from "../../assets/assets";
 
 const UserComment = () => {
+    const comments = [
+        {
+            name: "Dianne Russell",
+            role: "Marketing Coordinator",
+            image: assets.avatarUser1,
+            feedback:
+                "The soundbox website platform really makes it easy for me to find songs that are going viral on TikTok.",
+        },
+        {
+            name: "Cameron Williamson",
+            role: "Trust Administrator",
+            image: assets.avatarUser2,
+            feedback:
+                "I think this is very good and the features used are very satisfying, you should try this platform.",
+        },
+        {
+            name: "Kristin Watson",
+            role: "President of Sales",
+            image: assets.avatarUser3,
+            feedback:
+                "With the existence of the soundbox website platform, many people are helped, from creators to music lovers.",
+        },
+        {
+            name: "Mc Donald",
+            role: "Food Blogger",
+            image: assets.avatarUser4,
+            feedback:
+                "I think this is very good and the features used are very satisfying, you should try this platform.",
+        },
+    ];
+
     const leftSlider = () => {
-        console.log("left");
         let slider = document.getElementById("slider");
         slider.scrollLeft -= 250;
     };
@@ -16,11 +45,11 @@ const UserComment = () => {
 
     return (
         <div className=" text-white py-16 items-center">
-            <div className="flex gap-48 items-center justify-center">
-                <div className="text-4xl font-bold mb-4 w-72 justify-start ">
+            <div className="flex gap-36 justify-center">
+                <div className="text-4xl font-bold w-72 justify-start ">
                     WHAT ARE THEY SAYING?
                 </div>
-                <p className="justify-start mb-8 w-80 text-base ">
+                <p className="justify-start mb-8 w-[420px] text-base ">
                     It has been proven that thousands of users are satisfied
                     with the features we provide, here are some words from them
                 </p>
