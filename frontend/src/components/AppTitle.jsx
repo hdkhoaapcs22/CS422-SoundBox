@@ -1,7 +1,7 @@
 import React from "react";
 
 const AppTitle = ({ iconSize = 22, textSize = 18 }) => {
-    const gapItem = iconSize * 0.6;
+    const gapItem = iconSize * 0.4;
     const innerIcon = iconSize * 0.5;
 
     return (

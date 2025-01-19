@@ -11,18 +11,26 @@ import Profile from "./pages/Profile";
 import Signup from "./pages/Signup";
 import Sound from "./pages/IntroSound";
 import Login from "./pages/Login";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import IntroArtist from "./pages/IntroArtist";
 import IntroSound from "./pages/IntroSound";
 import IntroAlbum from "./pages/IntroAlbum";
+import Footer from "./components/Footer";
 
 const App = () => {
+    const location = useLocation();
+    const pagesWithNavbarAndFooter = [
+        "/",
+        "/intro-artist",
+        "/intro-sound",
+        "/intro-album",
+    ];
     return (
-        <div className=" h-screen bg-gradient-to-br from-[#031b47] to-[#0033a1]">
+        <div className=" h-full bg-gradient-to-br from-[#031b47] to-[#0033a1]">
             <ToastContainer />
-            <Navbar />
+            {pagesWithNavbarAndFooter.includes(location.pathname) && <Navbar />}
             <Routes>
                 <Route path="/" element={<Home />} />
                 <Route path="/intro-artist" element={<IntroArtist />} />
@@ -41,6 +49,7 @@ const App = () => {
                 <Route path="/support" element={<Support />} />
                 <Route path="/setting" element={<Setting />} />
             </Routes>
+            {pagesWithNavbarAndFooter.includes(location.pathname) && <Footer />}
         </div>
     );
 };

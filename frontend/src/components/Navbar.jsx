@@ -5,7 +5,7 @@ import AppTitle from "./AppTitle";
 const Navbar = () => {
     return (
         <div className="w-full flex flex-col">
-            <div className="flex items-center justify-between py-5 font-medium px-10 gap-20 text-sm text-white">
+            <div className="flex items-center justify-between py-5 font-medium px-32 gap-20 text-sm text-white">
                 <AppTitle />
 
                 <NavLink to="/" className="flex flex-col items-center gap-1">
