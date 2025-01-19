@@ -1,38 +1,44 @@
-import user_1 from "./user_1.jpg";
-import user_2 from "./user_2.jpg";
-import user_3 from "./user_3.jpg";
-import user_4 from "./user_4.jpg";
+import avatarUser1 from "./avatarUser1.jpg";
+import avatarUser2 from "./avatarUser2.jpg";
+import avatarUser3 from "./avatarUser3.jpg";
+import avatarUser4 from "./avatarUser4.jpg";
+import appleIcon from "./appleIcon.png";
+import chplayIcon from "./chplayIcon.jpg";
+import microsoftIcon from "./microsoftIcon.png";
+
 
 export const assets = {
-
+    appleIcon,
+    chplayIcon,
+    microsoftIcon,
 };
 
 export const comments = [
     {
         name: "Dianne Russell",
         role: "Marketing Coordinator",
-        image: user_1,
+        image: avatarUser1,
         feedback:
             "The soundbox website platform really makes it easy for me to find songs that are going viral on TikTok.",
     },
     {
         name: "Cameron Williamson",
         role: "Trust Administrator",
-        image: user_2,
+        image: avatarUser2,
         feedback:
             "I think this is very good and the features used are very satisfying, you should try this platform.",
     },
     {
         name: "Kristin Watson",
         role: "President of Sales",
-        image: user_3,
+        image: avatarUser3,
         feedback:
             "With the existence of the soundbox website platform, many people are helped, from creators to music lovers.",
     },
     {
         name: "Mc Donald",
         role: "Food Blogger",
-        image: user_4,
+        image: avatarUser4,
         feedback:
             "I think this is very good and the features used are very satisfying, you should try this platform.",
     }, 

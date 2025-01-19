@@ -43,10 +43,10 @@ const UserComment = () => {
             </div>
 
             {/* Feedback Section (Single Line Scrollable) */}
-            <div className="relative max-w-[86%] mx-auto overflow-hidden">
+            <div className="relative max-w-[86%] overflow-hidden mx-52">
                 <div
                     id="slider"
-                    className="flex gap-6 px-8 overflow-x-auto scroll-smooth scrollbar-hide"
+                    className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide"
                 >
                     {comments.map((comment, index) => (
                         <div
