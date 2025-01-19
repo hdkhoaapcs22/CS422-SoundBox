@@ -45,7 +45,7 @@ const UserComment = () => {
 
     return (
         <div className=" text-white py-16 items-center">
-            <div className="flex gap-36 justify-center">
+            <div className="flex gap-36 justify-start">
                 <div className="text-4xl font-bold w-72 justify-start ">
                     WHAT ARE THEY SAYING?
                 </div>
@@ -55,7 +55,7 @@ const UserComment = () => {
                 </p>
             </div>
             {/* Navigation Buttons Row */}
-            <div className="flex gap-4 mb-6 pl-[900px]">
+            <div className="flex gap-4 mb-6 pl-[720px]">
                 <button
                     onClick={leftSlider}
                     className="bg-white/10 p-3 rounded-lg hover:bg-gray-500"
@@ -72,7 +72,7 @@ const UserComment = () => {
             </div>
 
             {/* Feedback Section (Single Line Scrollable) */}
-            <div className="relative max-w-[86%] overflow-hidden mx-52">
+            <div className="relative max-w-[96%] overflow-hidden">
                 <div
                     id="slider"
                     className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide"

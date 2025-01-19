@@ -6,7 +6,7 @@ const Subscription = () => {
     };
 
     return (
-        <div className="bg-white/15 shadow-lg text-center text-white rounded-lg border px-4 border-gray-500 py-4 mx-52">
+        <div className="bg-white/15 shadow-lg text-center text-white rounded-lg border px-4 border-gray-500 py-4 ">
             <p className="text-4xl font-bold ">SUBCRIBE US</p>
             <p className="text-gray-400 mt-3 text-xl">
                 You can upgrade, downgrade, or cancel your subscription anytime.

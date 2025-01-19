@@ -5,6 +5,9 @@ import avatarUser4 from "./avatarUser4.jpg";
 import appleIcon from "./appleIcon.jpg";
 import chplayIcon from "./chplayIcon.jpg";
 import microsoftIcon from "./microsoftIcon.jpg";
+import melody from './melody.png';
+import TopSongFigure1 from './topSongFigure1.jpg';
+import TopSongFigure2 from './topSongFigure2.jpg';
 
 const assets = {    
     avatarUser1,
@@ -14,6 +17,9 @@ const assets = {
     appleIcon,
     chplayIcon,
     microsoftIcon,
+    melody,
+    TopSongFigure1,
+    TopSongFigure2
 }
 
 export default assets;

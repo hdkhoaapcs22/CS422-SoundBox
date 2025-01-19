@@ -26,8 +26,8 @@ const TopTierFeature = () => {
 
     return (
         <div className=" text-white py-16 items-center">
-            <div className="flex gap-36  justify-center">
-                <div className="text-4xl font-bold w-72 justify-start ">
+            <div className="flex gap-36  justify-start">
+                <div className="text-4xl font-bold w-72">
                     OUR TOPTIER FEATURES
                 </div>
                 <p className="justify-start mb-8 w-[420px] text-base ">
@@ -38,7 +38,7 @@ const TopTierFeature = () => {
                 </p>
             </div>
 
-            <div className="flex gap-10 mx-52">
+            <div className="flex gap-10">
                 {features.map((feature, index) => (
                     <div
                         key={index}
