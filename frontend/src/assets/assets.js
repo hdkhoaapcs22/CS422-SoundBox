@@ -2,16 +2,10 @@ import avatarUser1 from "./avatarUser1.jpg";
 import avatarUser2 from "./avatarUser2.jpg";
 import avatarUser3 from "./avatarUser3.jpg";
 import avatarUser4 from "./avatarUser4.jpg";
-import appleIcon from "./appleIcon.png";
+import appleIcon from "./appleIcon.jpg";
 import chplayIcon from "./chplayIcon.jpg";
-import microsoftIcon from "./microsoftIcon.png";
+import microsoftIcon from "./microsoftIcon.jpg";
 
-
-export const assets = {
-    appleIcon,
-    chplayIcon,
-    microsoftIcon,
-};
 
 export const comments = [
     {
@@ -43,3 +37,24 @@ export const comments = [
             "I think this is very good and the features used are very satisfying, you should try this platform.",
     }, 
 ];
+
+export const downloadSection = [
+    {
+        image: appleIcon,
+        alt: "Apple Icon",
+        message: "Download on the",
+        platform: "App Store",
+    },
+    {
+        image: chplayIcon,
+        alt: "Google Play Icon",
+        message: "Get it on",
+        platform: "Google Play",
+    },
+    {
+        image: microsoftIcon,
+        alt: "Microsoft Icon",
+        message: "Get it from",
+        platform: "Microsoft",
+    }
+]
