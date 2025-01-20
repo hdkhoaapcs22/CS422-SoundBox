@@ -25,8 +25,8 @@ const TopTierFeature = () => {
     ];
 
     return (
-        <div className=" text-white py-16 items-center">
-            <div className="flex gap-36  justify-start">
+        <div className=" text-white py-14 items-center">
+            <div className="flex gap-36  justify-start mb-10">
                 <div className="text-4xl font-bold w-72">
                     OUR TOPTIER FEATURES
                 </div>

@@ -55,7 +55,7 @@ const UserComment = () => {
                 </p>
             </div>
             {/* Navigation Buttons Row */}
-            <div className="flex gap-4 mb-6 pl-[720px]">
+            <div className="flex gap-4 mb-10 pl-[720px]">
                 <button
                     onClick={leftSlider}
                     className="bg-white/10 p-3 rounded-lg hover:bg-gray-500"
@@ -80,7 +80,7 @@ const UserComment = () => {
                     {comments.map((comment, index) => (
                         <div
                             key={index}
-                            className="min-w-[300px] bg-white/10 shadow-lg text-white rounded-lg px-6 py-4"
+                            className="min-w-[300px] bg-white/10 shadow-lg text-white rounded-lg px-6 py-10 border border-gray-500"
                         >
                             {/* User Info */}
                             <div className="flex items-center gap-4 mb-4">
