@@ -1,6 +1,12 @@
 import validator from 'validator';
 import listenerModel from '../../models/listenerModel.js';
 import bcrypt from 'bcrypt';
+import jwt from 'jsonwebtoken';
+
+
+const createToken = (userId) => {
+    return jwt.sign({userId}, process.env.JWT_SECRET);
+}
 
 const register = async (req, res) => {
 try {
@@ -25,9 +31,9 @@ try {
 
     try {
         const user = await listener.save();
-        const id = user._id;
+        const token = createToken(user._id);
 
-        res.json({success: true, id});
+        res.json({success: true, token});
     } catch (error) {
         res.json({success: false, message: 'Failed to register user'});
     }
@@ -46,7 +52,8 @@ const login = async (req, res) => {
         const isMatch = await bcrypt.compare(password, user.password);
         if(!isMatch) return res.json({success: false, message: 'Invalid credentials'});
 
-        res.json({success: true, id: user._id});
+        const token = createToken(user._id);
+        res.json({success: true, token});
     } catch (error) {
         res.json({success: false, message: error.message});
     }
@@ -54,6 +61,47 @@ const login = async (req, res) => {
 }
 
 const forgotPassword = async (req, res) => {
+    try {
+        const {email} = req.body;
+
+        const user = await listenerModel.findOne({email});
+        if(!user) return res.json({success: false, message: 'User does not exist'});
+
+        const token = createToken(user._id);
+
+        const resetLink = `${process.env.LISTENER_URL}/resetpassword/${user._id}/${token}`;
+        console.log(resetLink);
+        res.json({success: true, resetLink});
+    } catch (error) {
+        res.json({success: false, message: error.message});
+    }
 }
 
-export {register, login, forgotPassword}
+const resetPassword = async(req,res) => {
+    try {
+        const {id, resetToken} = req.params;
+        console.log(resetToken);
+        console.log(id);
+        const {newPassword, confirmPassword} = req.body;
+
+        if(newPassword !== confirmPassword) return res.json({success: false, message: 'Passwords do not match'});
+
+        const user = await listenerModel.findById(id);
+        if(!user) return res.json({success: false, message: 'User does not exist'});
+
+        const isMatch = jwt.verify(resetToken, process.env.JWT_SECRET);
+
+        if(!isMatch) return res.json({success: false, message: 'Invalid token'});
+
+        const salt = await bcrypt.genSalt(10);
+        const hasedPassword = await bcrypt.hash(newPassword, salt);
+
+        await listenerModel.findByIdAndUpdate(id, {password: hasedPassword});
+
+        res.json({success: true, message: 'Password reset successful'});
+    } catch (error) {
+        res.json({success: false, message: error.message});
+    }
+}
+
+export {register, login, forgotPassword, resetPassword}
