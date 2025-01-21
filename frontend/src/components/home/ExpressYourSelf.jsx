@@ -22,18 +22,18 @@ const ExpressYourselfSection = () => {
             <div className="-mx-60 relative">
                 <img src={assets.melody1} className="w-full h-24" />
             </div>
-                <div className="relative bottom-36 h-[400px] w-full">
-                    {/* Background shape */}
-                    <div className="absolute top-[120px] left-80 w-[300px] h-[320px] bg-[#B6FF52] rounded-tr-[120px] rounded-tl-[120px]"></div>
-                    <div className="absolute top-32 w-16 h-16 bg-[#E97FF1] rounded-full right-[430px]"></div>
+            <div className="relative bottom-36 h-[400px] w-full">
+                {/* Background shape */}
+                <div className="absolute top-[120px] left-80 w-[300px] h-[320px] bg-[#B6FF52] rounded-tr-[120px] rounded-tl-[120px]"></div>
+                <div className="absolute top-32 w-16 h-16 bg-[#E97FF1] rounded-full right-[430px]"></div>
 
-                    {/* Person Image */}
-                    <img
-                        src={assets.avatarUser5}
-                        alt="User Listening"
-                        className="absolute w-[300px] h-auto object-cover z-10 drop-shadow-2xl left-[320px] "
-                    />
-                </div>
+                {/* Person Image */}
+                <img
+                    src={assets.avatarUser5}
+                    alt="User Listening"
+                    className="absolute w-[300px] h-auto object-cover z-10 drop-shadow-2xl left-[320px] "
+                />
+            </div>
         </div>
     );
 };

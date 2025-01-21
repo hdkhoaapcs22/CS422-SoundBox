@@ -8,9 +8,10 @@ import Album from "./pages/Album";
 import Artist from "./pages/Artist";
 import Favorite from "./pages/Favorite";
 import Profile from "./pages/Profile";
-import Signup from "./pages/Signup";
 import Sound from "./pages/IntroSound";
 import Login from "./pages/Login";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -18,6 +19,8 @@ import IntroArtist from "./pages/IntroArtist";
 import IntroSound from "./pages/IntroSound";
 import IntroAlbum from "./pages/IntroAlbum";
 import Footer from "./components/Footer";
+import { useContext, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 const App = () => {
     const location = useLocation();
@@ -36,8 +39,12 @@ const App = () => {
                 <Route path="/intro-artist" element={<IntroArtist />} />
                 <Route path="/intro-sound" element={<IntroSound />} />
                 <Route path="/intro-album" element={<IntroAlbum />} />
-                <Route path="/signup" element={<Signup />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/forgot-password" element={<ForgotPassword />} />
+                <Route
+                    path="/reset-password/:id/"
+                    element={<ResetPassword />}
+                />
                 <Route path="/sound" element={<Sound />} />
                 <Route path="/artist" element={<Artist />} />
                 <Route path="/favorite" element={<Favorite />} />
