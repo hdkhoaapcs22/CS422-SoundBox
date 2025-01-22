@@ -5,8 +5,6 @@ import Dashboard from "./pages/listener/Dashboard";
 import Favorite from "./pages/listener/Favorite";
 import PlayView from "./pages/listener/PlayView";
 import Profile from "./pages/listener/Profile";
-import Setting from "./pages/listener/Setting";
-import Support from "./pages/listener/Support";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import IntroAlbum from "./pages/IntroAlbum";
@@ -15,7 +13,6 @@ import IntroSound from "./pages/IntroSound";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 
-import ArtistDashboard from "./pages/artist/ArtistDashboard";
 import CreateAlbum from "./pages/artist/CreateAlbum";
 import CreateSong from "./pages/artist/CreateSong";
 import EditAlbum from "./pages/artist/EditAlbum";
@@ -57,10 +54,7 @@ const App = () => {
                 <Route path="/album" element={<Album />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/play-view" element={<PlayView />} />
-                <Route path="/support" element={<Support />} />
-                <Route path="/setting" element={<Setting />} />
 
-                <Route path="/artist/dashboard" element={<ArtistDashboard />} />
                 <Route path="/artist/create-album" element={<CreateAlbum />} />
                 <Route path="/artist/create-song" element={<CreateSong />} />
                 <Route path="/artist/edit-album" element={<EditAlbum />} />

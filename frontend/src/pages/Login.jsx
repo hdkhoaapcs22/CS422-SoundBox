@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext } from "react";
 import ImageDecoration from "../components/Auth/ImageDecoration";
 import AppTitle from "../components/AppTitle";
 import Input from "../components/Input";
@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { AppContext } from "../global/AppContext";
 
 const Login = () => {
     const [email, setEmail] = useState("");
@@ -17,6 +18,7 @@ const Login = () => {
     const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [currentState, setCurrentState] = useState("Login");
     const navigate = useNavigate();
+    const { role, setRole } = useContext(AppContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -54,10 +56,9 @@ const Login = () => {
                 );
                 if (response.data.success) {
                     const role = response.data.role;
+                    setRole(role);
                     if (role === "admin") {
                         navigate("/admin/dashboard");
-                    } else if (role === "artist") {
-                        navigate("/artist/dashboard");
                     } else {
                         navigate("/dashboard");
                     }
