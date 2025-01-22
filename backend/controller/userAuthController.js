@@ -1,14 +1,24 @@
 import validator from 'validator';
-import listenerModel from '../../models/listenerModel.js';
 import nodemailer  from 'nodemailer';
+import listenerModel from '../models/listenerModel.js';
+import artistModel from '../models/artistModel.js'; 
+import adminModel from '../models/adminModel.js';
 
 const register = async (req, res) => {
 try {
     const {email, password} = req.body;
-    const isExists = await listenerModel.findOne({email});
+    let isExists = await listenerModel.findOne({email});
 
     if(isExists) return res.json({success: false, message: 'User already exists'});
     
+    isExists = await artistModel.findOne({email});
+
+    if(isExists) return res.json({success: false, message: 'User already exists'});
+
+    isExists = await adminModel.findOne({email});
+
+    if(isExists) return res.json({success: false, message: 'User already exists'});
+
     if(!validator.isEmail(email)) return res.json({success: false, message: 'Invalid email'});
 
     const listener = new listenerModel({
@@ -28,16 +38,24 @@ try {
 const login = async (req, res) => {
     try {
         const {email, password} = req.body;
-
-        const user = await listenerModel.findOne({email});
-        if(!user) return res.json({success: false, message: 'User does not exist'});
+        let role = 'listener';
+        let user = await listenerModel.findOne({email});
+        if(!user){
+            role = 'artist';
+            user = await artistModel.findOne({email});
+            if(!user) {
+                role = 'admin';  
+                user = await adminModel.findOne({email});
+                if(!user) return res.json({success: false, message: 'User does not exist'});
+            }
+        }
 
         const isMatch = password === user.password;
         if(!isMatch) return res.json({success: false, message: 'Invalid credentials'});
 
         const id = user._id;
 
-        res.json({success: true, id});
+        res.json({success: true, id, role});
     } catch (error) {
         res.json({success: false, message: error.message});
     }
@@ -48,8 +66,12 @@ const forgotPassword = async (req, res) => {
     try {
         const {userName, email} = req.body;
 
-        const user = await listenerModel.findOne({email});
-        if(!user) return res.json({success: false, message: 'User does not exist'});
+        let user = await listenerModel.findOne({email});
+        if(!user){
+            user = await artistModel.findOne({email});
+            if(!user) return res.json({success: false, message: 'User does not exist'});
+        }
+        console.log(userName, user.name);
         if(user.name != userName)   return res.json({success: false, message: 'Invalid username'});
 
         const resetLink = `${process.env.LISTENER_URL}/reset-password/${user._id}`;
@@ -90,9 +112,14 @@ const resetPassword = async(req,res) => {
         const {newPassword} = req.body;
 
         const user = await listenerModel.findById(id);
-        if(!user) return res.json({success: false, message: 'User does not exist'});
-
-        await listenerModel.findByIdAndUpdate(id, {password: newPassword});
+        if(!user){
+            const user = await artistModel.findById(id);
+            if(!user) return res.json({success: false, message: 'User does not exist'});
+            await artistModel.findByIdAndUpdate(id, {password: newPassword});
+        }
+        else{
+            await listenerModel.findByIdAndUpdate(id, {password: newPassword});
+        }
 
         res.json({success: true, message: 'Password reset successful'});
     } catch (error) {

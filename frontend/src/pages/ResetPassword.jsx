@@ -4,7 +4,7 @@ import AppTitle from "../components/AppTitle";
 import Input from "../components/Input";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 
 const ResetPassword = () => {
     const [newPassword, setNewPassword] = useState("");
@@ -14,6 +14,7 @@ const ResetPassword = () => {
         useState(true);
 
     const { id } = useParams();
+    const navigate = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -32,6 +33,9 @@ const ResetPassword = () => {
 
             if (response.data.success) {
                 toast.success(response.data.message);
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
             } else {
                 toast.error(response.data.message);
             }

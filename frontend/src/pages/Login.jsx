@@ -53,7 +53,14 @@ const Login = () => {
                     { email, password }
                 );
                 if (response.data.success) {
-                    navigate("/dashboard");
+                    const role = response.data.role;
+                    if (role === "admin") {
+                        navigate("/admin/dashboard");
+                    } else if (role === "artist") {
+                        navigate("/artist/dashboard");
+                    } else {
+                        navigate("/dashboard");
+                    }
                 } else {
                     toast.error(response.data.message);
                 }
@@ -191,10 +198,8 @@ const Login = () => {
                         <span
                             onClick={() => {
                                 setCurrentState("Sign Up");
-                                setconditionCheckedBox(false);
                                 setEmail("");
                                 setPassword("");
-                                setConfirmPassword("");
                             }}
                             className="text-green-400 font-bold hover:underline cursor-pointer"
                         >
@@ -202,7 +207,13 @@ const Login = () => {
                         </span>
                     ) : (
                         <span
-                            onClick={() => setCurrentState("Login")}
+                            onClick={() => {
+                                setEmail("");
+                                setconditionCheckedBox(false);
+                                setPassword("");
+                                setConfirmPassword("");
+                                setCurrentState("Login");
+                            }}
                             className="text-green-400 font-bold hover:underline cursor-pointer"
                         >
                             Login here
