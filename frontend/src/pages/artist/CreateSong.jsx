@@ -3,12 +3,14 @@ import Input from "../../components/Input";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { AppContext } from "../../global/AppContext";
+import assets from "../../assets/assets";
 
 const CreateSong = () => {
     const [isLoading, setIsLoading] = useState(false);
     const { id } = useContext(AppContext);
     const [image, setImage] = useState(null);
     const [audio, setAudio] = useState(null);
+    const [audioPreview, setAudioPreview] = useState(null);
     const [songTitle, setSongTitle] = useState("");
     const [genre, setGenre] = useState("Ballad");
     const [collaborators, setCollaborators] = useState([]);
@@ -92,20 +94,32 @@ const CreateSong = () => {
 
             <form onSubmit={onSubmitHandler}>
                 <div className="mb-4">
-                    <div className="flex gap-6">
+                    <div className="flex gap-20">
                         <div>
-                            <label className="font-semibold block">
+                            <div className="font-semibold mb-2">
                                 Upload Sound Image
+                            </div>
+                            <label htmlFor="artistUploadSingleSongImage">
+                                <img
+                                    className="w-20"
+                                    src={
+                                        !image
+                                            ? assets.uploadArea
+                                            : URL.createObjectURL(image)
+                                    }
+                                    alt=""
+                                />
+                                <input
+                                    onChange={(e) =>
+                                        setImage(e.target.files[0])
+                                    }
+                                    type="file"
+                                    name=""
+                                    id="artistUploadSingleSongImage"
+                                    hidden
+                                    required
+                                />
                             </label>
-                            <input
-                                id="artistUploadSingleSongImage"
-                                type="file"
-                                className="p-2 text-white"
-                                onChange={(e) => {
-                                    setImage(e.target.files[0]);
-                                }}
-                                required
-                            />
                         </div>
                         <div>
                             <label className="font-semibold block">
@@ -115,14 +129,38 @@ const CreateSong = () => {
                                 id="artistUploadSingleSongAudio"
                                 type="file"
                                 name="soundFile"
-                                onChange={(e) => setAudio(e.target.files[0])}
+                                accept="audio/*"
+                                onChange={(e) => {
+                                    const file = e.target.files[0];
+                                    setAudio(file);
+                                    if (file) {
+                                        setAudioPreview(
+                                            URL.createObjectURL(file)
+                                        );
+                                    }
+                                    else{
+                                        setAudioPreview(null);
+                                    }
+                                }}
                                 className="text-white p-2 rounded"
                                 required
                             />
+                            {audioPreview && (
+                                <div className="my-4">
+                                    <label className="font-semibold block pb-2">
+                                        Preview Audio
+                                    </label>
+                                    <audio controls className="w-full">
+                                        <source
+                                            src={audioPreview}
+                                            type="audio/mpeg"
+                                        />
+                                    </audio>
+                                </div>
+                            )}
                         </div>
                     </div>
                 </div>
-
                 <Input
                     type={"text"}
                     label={"Song Title"}

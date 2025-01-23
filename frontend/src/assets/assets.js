@@ -10,6 +10,8 @@ import melody1 from './melody1.png';
 import melody2 from './melody2.png';
 import TopSongFigure1 from './topSongFigure1.jpg';
 import TopSongFigure2 from './topSongFigure2.jpg';
+import uploadArea from './uploadArea.png';
+
 
 const assets = {    
     avatarUser1,
@@ -24,6 +26,7 @@ const assets = {
     melody2,
     TopSongFigure1,
     TopSongFigure2,
+    uploadArea
 }
 
 export default assets;

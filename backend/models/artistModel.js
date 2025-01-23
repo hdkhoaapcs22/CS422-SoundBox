@@ -19,6 +19,10 @@ const songSchema = new mongoose.Schema({
     },
     collaborators: {
         type: [String],
+    },
+    likes: {
+        type: Number,
+        default: 0
     }
 });
 
