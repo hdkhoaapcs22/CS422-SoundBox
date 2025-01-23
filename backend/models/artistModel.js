@@ -31,7 +31,7 @@ const albumSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    songs: [songSchema] // Store the full song objects, not just ObjectIds
+    songs: [songSchema] 
 });
 
 const artistSchema = new mongoose.Schema({

@@ -97,7 +97,7 @@ const CreateSong = () => {
                     <div className="flex gap-20">
                         <div>
                             <div className="font-semibold mb-2">
-                                Upload Sound Image
+                                Upload Song Image
                             </div>
                             <label htmlFor="artistUploadSingleSongImage">
                                 <img
@@ -137,8 +137,7 @@ const CreateSong = () => {
                                         setAudioPreview(
                                             URL.createObjectURL(file)
                                         );
-                                    }
-                                    else{
+                                    } else {
                                         setAudioPreview(null);
                                     }
                                 }}
@@ -155,6 +154,8 @@ const CreateSong = () => {
                                             src={audioPreview}
                                             type="audio/mpeg"
                                         />
+                                        Your browser does not support the audio
+                                        tag.
                                     </audio>
                                 </div>
                             )}
