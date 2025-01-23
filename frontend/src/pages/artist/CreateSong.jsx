@@ -5,17 +5,19 @@ import axios from "axios";
 import { AppContext } from "../../global/AppContext";
 
 const CreateSong = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const { id } = useContext(AppContext);
     const [image, setImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [songTitle, setSongTitle] = useState("");
     const [genre, setGenre] = useState("Ballad");
-    const [collaborators, setCollaborators] = useState([""]);
+    const [collaborators, setCollaborators] = useState([]);
     const [conditionCheckedBox, setconditionCheckedBox] = useState(false);
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         try {
+            setIsLoading(true);
             if (!conditionCheckedBox) {
                 toast.error("Please accept the terms and conditions.");
                 return;
@@ -28,7 +30,7 @@ const CreateSong = () => {
             const formData = new FormData();
             formData.append("songTitle", songTitle);
             formData.append("genre", genre);
-            formData.append("collaborators",collaborators);
+            formData.append("collaborators", collaborators);
             formData.append("image", image);
             formData.append("audio", audio);
             formData.append("id", id);
@@ -39,12 +41,23 @@ const CreateSong = () => {
             );
 
             if (response.data.success) {
+                setSongTitle("");
+                setGenre("Ballad");
+                setCollaborators([]);
+                setImage(null);
+                setAudio(null);
+                document.getElementById("artistUploadSingleSongImage").value =
+                    "";
+                document.getElementById("artistUploadSingleSongAudio").value =
+                    "";
                 toast.success("Song uploaded successfully!");
             } else {
                 toast.error(response.message);
             }
         } catch (error) {
             toast.error(error.message);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -79,28 +92,32 @@ const CreateSong = () => {
 
             <form onSubmit={onSubmitHandler}>
                 <div className="mb-4">
-                    <div className="flex gap-">
+                    <div className="flex gap-6">
                         <div>
-                            <label className="font-semibold">
+                            <label className="font-semibold block">
                                 Upload Sound Image
                             </label>
                             <input
+                                id="artistUploadSingleSongImage"
                                 type="file"
-                                className="w-full p-2 rounded text-white"
+                                className="p-2 text-white"
                                 onChange={(e) => {
                                     setImage(e.target.files[0]);
                                 }}
+                                required
                             />
                         </div>
                         <div>
-                            <label className="font-semibold">
+                            <label className="font-semibold block">
                                 Upload Sound File
                             </label>
                             <input
+                                id="artistUploadSingleSongAudio"
                                 type="file"
                                 name="soundFile"
                                 onChange={(e) => setAudio(e.target.files[0])}
-                                className="w-full text-white p-2 rounded"
+                                className="text-white p-2 rounded"
+                                required
                             />
                         </div>
                     </div>
@@ -197,9 +214,21 @@ const CreateSong = () => {
 
                 <button
                     type="submit"
-                    className="w-full bg-green-400 text-black p-2 rounded font-bold"
+                    className="w-full bg-green-400 text-white p-2 rounded font-bold"
+                    disabled={isLoading}
                 >
-                    Upload
+                    {isLoading ? (
+                        <div className="flex items-center justify-center gap-2">
+                            <div
+                                className="w-4 h-4 border-4 border-white
+                                        border-t-transparent rounded-full 
+                                        animate-spin"
+                            ></div>
+                            Uploading...
+                        </div>
+                    ) : (
+                        "Upload"
+                    )}
                 </button>
             </form>
         </div>

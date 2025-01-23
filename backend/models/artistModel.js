@@ -19,7 +19,6 @@ const songSchema = new mongoose.Schema({
     },
     collaborators: {
         type: [String],
-        default: []
     }
 });
 
@@ -69,10 +68,6 @@ const artistSchema = new mongoose.Schema({
         type: [albumSchema],
         default: []
     },
-    collaborators: {
-        type: [String],
-        default: []
-    }
 }, {
     timestamps: true,
     minimize: false

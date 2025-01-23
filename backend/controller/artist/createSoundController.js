@@ -20,12 +20,18 @@ const createSong = async (req, res) => {
         let imageResult = await uploadToCloudinary(req.files.image[0])
         let audioResult = await uploadToCloudinary(req.files.audio[0])
 
+        let formattedCollaborators = collaborators
+        if(collaborators.length > 0){
+            formattedCollaborators = collaborators.split(',');
+        }
+        else{
+            formattedCollaborators = []
+        }
+
         const artist = await artistModel.findById(id);
         if (!artist) {
             return res.json({ success: false, message: 'Artist not found' });
         }
-
-        const formattedCollaborators = collaborators.split(',');
 
         const newSong = {
             title: songTitle,
