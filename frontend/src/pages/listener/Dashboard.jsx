@@ -1,12 +1,7 @@
-import React from 'react'
-import SideBar from '../../components/Dashboard/SideBar'
+import React from "react";
 
 const Dashboard = () => {
-  return (
-    <div className='h-screen grid grid-cols-[1fr_3fr_1fr] gap-4'>
-      <SideBar/>
-    </div>
-  )
-}
+    return <div>Dashboard</div>;
+};
 
-export default Dashboard
+export default Dashboard;

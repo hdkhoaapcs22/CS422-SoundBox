@@ -1,9 +1,10 @@
 import { ToastContainer } from "react-toastify";
+
 import Album from "./pages/listener/Album";
 import Artist from "./pages/listener/Artist";
-import Dashboard from "./pages/listener/Dashboard";
+import SideBar from "./components/Dashboard/SideBar";
 import Favorite from "./pages/listener/Favorite";
-import PlayView from "./pages/listener/PlayView";
+import PlayView from "./pages/listener/Sound";
 import Profile from "./pages/listener/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
@@ -48,18 +49,7 @@ const App = () => {
                     path="/reset-password/:id/"
                     element={<ResetPassword />}
                 />
-                <Route path="/artist" element={<Artist />} />
-                <Route path="/favorite" element={<Favorite />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/album" element={<Album />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/play-view" element={<PlayView />} />
-
-                <Route path="/artist/create-album" element={<CreateAlbum />} />
-                <Route path="/artist/create-song" element={<CreateSong />} />
-                <Route path="/artist/edit-album" element={<EditAlbum />} />
-                <Route path="/artist/edit-song" element={<EditSong />} />
-                <Route path="/artist/own-product" element={<OwnProduct />} />
+                <Route path="/dashboard" element={<SideBar />} />
 
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
             </Routes>

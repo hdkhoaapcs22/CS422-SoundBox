@@ -1,5 +1,36 @@
 import mongoose from 'mongoose';
 
+const songSchema = new mongoose.Schema({
+    title: {
+        type: String,
+        required: true
+    },
+    genre: {
+        type: String,
+        required: true
+    },
+    imageUrl: {
+        type: String,
+        required: true
+    },
+    audioUrl: {
+        type: String,
+        required: true
+    },
+    collaborators: {
+        type: [String],
+        default: []
+    }
+});
+
+const albumSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    songs: [songSchema] // Store the full song objects, not just ObjectIds
+});
+
 const artistSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -31,13 +62,17 @@ const artistSchema = new mongoose.Schema({
         required: true
     },
     songs: {
-        type: Array,
+        type: [songSchema],
         default: []
     },
     albums: {
-        type: Array,
+        type: [albumSchema],
         default: []
     },
+    collaborators: {
+        type: [String],
+        default: []
+    }
 }, {
     timestamps: true,
     minimize: false
