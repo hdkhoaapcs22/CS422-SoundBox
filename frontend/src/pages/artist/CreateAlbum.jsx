@@ -12,6 +12,7 @@ const CreateAlbum = () => {
     const [albumTitle, setAlbumTitle] = useState("");
     const [songs, setSongs] = useState([
         {
+            id: Date.now(),
             title: "",
             image: null,
             audio: null,
@@ -21,46 +22,55 @@ const CreateAlbum = () => {
     ]);
     const [conditionCheckedBox, setConditionCheckedBox] = useState(false);
 
-    const handleSongChange = (index, field, value) => {
+    const handleSongChange = (songId, field, value) => {
         setSongs((prevSongs) => {
             const updatedSongs = [...prevSongs];
 
-            if (field === "audio") {
-                // Revoke the old object URL to free memory
-                if (updatedSongs[index].audioPreview) {
-                    URL.revokeObjectURL(updatedSongs[index].audioPreview);
+            const songIndex = updatedSongs.findIndex(
+                (song) => song.id === songId
+            );
+
+            if (songIndex !== -1) {
+                const song = updatedSongs[songIndex];
+
+                if (field === "audio") {
+                    if (song.audioPreview) {
+                        URL.revokeObjectURL(song.audioPreview);
+                    }
+
+                    updatedSongs[songIndex] = {
+                        ...song,
+                        audio: value,
+                        audioPreview: null,
+                    };
+
+                    if (value && value.size > 0) {
+                        setTimeout(() => {
+                            setSongs((prev) => {
+                                const refreshedSongs = [...prev];
+                                refreshedSongs[songIndex].audioPreview =
+                                    URL.createObjectURL(value);
+                                return refreshedSongs;
+                            });
+                        }, 0);
+                    }
+                } else {
+                    updatedSongs[songIndex] = {
+                        ...song,
+                        [field]: value,
+                    };
                 }
-
-                // Force React to detect a change
-                updatedSongs[index] = {
-                    ...updatedSongs[index],
-                    audio: value,
-                    audioPreview: null, // Set to null first
-                };
-
-                setTimeout(() => {
-                    setSongs((prev) => {
-                        const refreshedSongs = [...prev];
-                        refreshedSongs[index].audioPreview =
-                            URL.createObjectURL(value);
-                        return refreshedSongs;
-                    });
-                }, 0);
-            } else {
-                updatedSongs[index] = {
-                    ...updatedSongs[index],
-                    [field]: value,
-                };
             }
 
             return updatedSongs;
         });
     };
-
+    // Add a new song
     const addSong = () => {
-        setSongs([
-            ...songs,
+        setSongs((prevSongs) => [
+            ...prevSongs,
             {
+                id: Date.now(),
                 title: "",
                 image: null,
                 audio: null,
@@ -70,14 +80,16 @@ const CreateAlbum = () => {
         ]);
     };
 
-    const removeSong = (index) => {
+    // Remove song by ID
+    const removeSong = (songId) => {
         if (songs.length > 1) {
-            setSongs(songs.filter((_, i) => i !== index));
+            setSongs(songs.filter((song) => song.id !== songId));
         } else {
             toast.error("At least one song is required in the album.");
         }
     };
 
+    // Submit album form
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         if (!conditionCheckedBox) {
@@ -114,10 +126,12 @@ const CreateAlbum = () => {
                 setAlbumImage(null);
                 setSongs([
                     {
+                        id: Date.now(),
                         title: "",
                         image: null,
                         audio: null,
                         genre: "Ballad",
+                        audioPreview: null,
                     },
                 ]);
             } else {
@@ -163,23 +177,19 @@ const CreateAlbum = () => {
                     />
                 </div>
 
-                {songs.map((song, index) => (
+                {songs.map((song) => (
                     <div
-                        key={index}
+                        key={song.id}
                         className="mb-6 border p-4 rounded bg-white/15"
                     >
-                        <h3 className="text-2xl font-semibold mb-4">
-                            Song {index + 1}
-                        </h3>
+                        <h3 className="text-2xl font-semibold mb-4">Song</h3>
 
                         <div className="flex gap-20 mb-4">
                             <div>
                                 <div className="font-semibold mb-2">
                                     Upload Song Image
                                 </div>
-                                <label
-                                    htmlFor={`artistUploadSongImage${index}`}
-                                >
+                                <label htmlFor={`uploadSongImage-${song.id}`}>
                                     <img
                                         className="w-20"
                                         src={
@@ -194,14 +204,13 @@ const CreateAlbum = () => {
                                     <input
                                         onChange={(e) =>
                                             handleSongChange(
-                                                index,
+                                                song.id,
                                                 "image",
                                                 e.target.files[0]
                                             )
                                         }
                                         type="file"
-                                        name=""
-                                        id={`artistUploadSongImage${index}`}
+                                        id={`uploadSongImage-${song.id}`}
                                         hidden
                                         required
                                     />
@@ -211,18 +220,17 @@ const CreateAlbum = () => {
                             <div>
                                 <label
                                     className="font-semibold block mt-2"
-                                    htmlFor={`artistUploadSongAudio${index}`}
+                                    htmlFor={`uploadSongAudio-${song.id}`}
                                 >
                                     Upload Song Audio
                                 </label>
                                 <input
-                                    id={`artistUploadSongAudio${index}`}
+                                    id={`uploadSongAudio-${song.id}`}
                                     type="file"
-                                    name="soundFile"
                                     accept="audio/*"
                                     onChange={(e) =>
                                         handleSongChange(
-                                            index,
+                                            song.id,
                                             "audio",
                                             e.target.files[0]
                                         )
@@ -252,7 +260,7 @@ const CreateAlbum = () => {
                             placeholder="Enter song title"
                             value={song.title}
                             onChangeValue={(value) =>
-                                handleSongChange(index, "title", value)
+                                handleSongChange(song.id, "title", value)
                             }
                         />
                         <div className="mb-6">
@@ -261,7 +269,7 @@ const CreateAlbum = () => {
                                 value={song.genre}
                                 onChange={(e) =>
                                     handleSongChange(
-                                        index,
+                                        song.id,
                                         "genre",
                                         e.target.value
                                     )
@@ -279,7 +287,7 @@ const CreateAlbum = () => {
 
                         <button
                             type="button"
-                            onClick={() => removeSong(index)}
+                            onClick={() => removeSong(song.id)}
                             className="bg-red-500 text-white p-2 rounded mt-2"
                         >
                             Remove Song
