@@ -38,7 +38,7 @@ const OwnProduct = () => {
             {/* Songs Section */}
             <div className="mb-8">
                 <h2 className="text-lg font-bold mb-4">Songs</h2>
-                <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
+                <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
                     <div>#</div>
                     <div>Sound</div>
                     <div>Genre</div>
@@ -48,7 +48,7 @@ const OwnProduct = () => {
                 {songs.map((item, index) => (
                     <div
                         key={item._id}
-                        className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+                        className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
                     >
                         <span>{index + 1}</span>
                         <div className="flex items-center gap-2">
@@ -79,15 +79,17 @@ const OwnProduct = () => {
             {/* Albums Section */}
             <div>
                 <h2 className="text-lg font-bold mb-4">Albums</h2>
-                <div className="grid grid-cols-[1fr_2fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
+                <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
                     <div>#</div>
                     <div>Album</div>
+                    <div></div>
+                    <div></div>
                     <div>Actions</div>
                 </div>
                 {albums.map((item, index) => (
                     <div
                         key={item._id}
-                        className="grid grid-cols-[1fr_2fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+                        className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
                     >
                         <span>{index + 1}</span>
                         <div className="flex items-center gap-2">
@@ -98,6 +100,8 @@ const OwnProduct = () => {
                             />
                             <span>{item.name}</span>
                         </div>
+                        <div></div>
+                        <div></div>
                         <div>
                             <button
                                 type="button"
