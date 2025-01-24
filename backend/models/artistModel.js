@@ -48,17 +48,13 @@ const artistSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    avatarUrl: {
+        type: String,
+        default: 'https://res.cloudinary.com/df1i75amy/image/upload/v1737724061/Frame_ipoi4s.png'
+    },
     phone: {
         type: String,
         default: '0000000000',
-    },
-    gender: {
-        type: String,
-        default: 'Not Specified'
-    },
-    dob: {
-        type: Date,
-        default: Date.now
     },
     identityCard: {
         type: String,

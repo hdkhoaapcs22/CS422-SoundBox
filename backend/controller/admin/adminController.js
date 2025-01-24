@@ -4,7 +4,6 @@ import validator from 'validator';
 const createArtist = async (req, res) => {
     try {
         const {name, email, phone, identityCard, dob, gender, password} = req.body;
-        console.log(req.body);
         const isExists = await artistModel.findOne({email});
 
         if(isExists) return res.json({success: false, message: 'User already exists'});
@@ -24,7 +23,7 @@ const createArtist = async (req, res) => {
             const user = await artist.save();
             const id = user._id;
 
-            res.json({success: true, id});
+            res.json({success: true, message: 'User created successfully'});
     } catch (error) {
         res.json({success: false, message: error.message});
     }

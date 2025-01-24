@@ -1,11 +1,6 @@
 import { ToastContainer } from "react-toastify";
 
-import Album from "./pages/listener/Album";
-import Artist from "./pages/listener/Artist";
 import SideBar from "./components/Dashboard/SideBar";
-import Favorite from "./pages/listener/Favorite";
-import PlayView from "./pages/listener/Sound";
-import Profile from "./pages/listener/Profile";
 import ForgotPassword from "./pages/ForgotPassword";
 import Home from "./pages/Home";
 import IntroAlbum from "./pages/IntroAlbum";
@@ -14,13 +9,7 @@ import IntroSound from "./pages/IntroSound";
 import Login from "./pages/Login";
 import ResetPassword from "./pages/ResetPassword";
 
-import CreateAlbum from "./pages/artist/CreateAlbum";
-import CreateSong from "./pages/artist/CreateSong";
-import EditAlbum from "./pages/artist/EditAlbum";
-import EditSong from "./pages/artist/EditSong";
-import OwnProduct from "./pages/artist/OwnProduct";
-
-import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminSideBar from "./components/Admin/Dashboard/AdminSideBar";
 
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
@@ -51,7 +40,7 @@ const App = () => {
                 />
                 <Route path="/dashboard" element={<SideBar />} />
 
-                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                <Route path="/admin/dashboard" element={<AdminSideBar />} />
             </Routes>
             {pagesWithNavbarAndFooter.includes(location.pathname) && <Footer />}
         </div>
