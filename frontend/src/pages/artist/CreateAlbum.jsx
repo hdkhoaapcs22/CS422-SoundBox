@@ -7,7 +7,7 @@ import assets from "../../assets/assets";
 
 const CreateAlbum = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { id } = useContext(AppContext);
+    const { setArtistId } = useContext(AppContext);
     const [albumImage, setAlbumImage] = useState(null);
     const [albumTitle, setAlbumTitle] = useState("");
     const [songs, setSongs] = useState([
@@ -109,7 +109,7 @@ const CreateAlbum = () => {
             const formData = new FormData();
             formData.append("albumTitle", albumTitle);
             formData.append("albumImage", albumImage);
-            formData.append("id", id);
+            formData.append("id", setArtistId);
 
             songs.forEach((song, index) => {
                 formData.append(`songs[image]`, song.image);

@@ -4,13 +4,16 @@ export const AppContext = React.createContext();
 
 const AppContextProvider = (props) => {
     const [role, setRole] = React.useState("");
-    const [id, setId] = React.useState("");
-    
+    const [artistId, setArtistId] = React.useState("");
+    const [listenerId, setListenerId] = React.useState("");
+
     const value = {
         role,
         setRole,
-        id,
-        setId,
+        artistId,
+        setArtistId,
+        listenerId,
+        setListenerId,
     };
 
     return (

@@ -7,7 +7,7 @@ import assets from "../../assets/assets";
 
 const CreateSong = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const { id } = useContext(AppContext);
+    const { setArtistId } = useContext(AppContext);
     const [image, setImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [audioPreview, setAudioPreview] = useState(null);
@@ -35,7 +35,7 @@ const CreateSong = () => {
             formData.append("collaborators", collaborators);
             formData.append("image", image);
             formData.append("audio", audio);
-            formData.append("id", id);
+            formData.append("id", setArtistId);
 
             const response = await axios.post(
                 import.meta.env.VITE_BACKEND_URL + "/api/artist/add-song",
