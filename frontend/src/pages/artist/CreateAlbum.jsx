@@ -19,6 +19,14 @@ const CreateAlbum = () => {
             genre: "Ballad",
             audioPreview: null,
         },
+        {
+            id: Date.now() + 1,
+            title: "",
+            image: null,
+            audio: null,
+            genre: "Ballad",
+            audioPreview: null,
+        },
     ]);
     const [conditionCheckedBox, setConditionCheckedBox] = useState(false);
 
@@ -65,7 +73,7 @@ const CreateAlbum = () => {
             return updatedSongs;
         });
     };
-    // Add a new song
+
     const addSong = () => {
         setSongs((prevSongs) => [
             ...prevSongs,
@@ -80,39 +88,34 @@ const CreateAlbum = () => {
         ]);
     };
 
-    // Remove song by ID
     const removeSong = (songId) => {
-        if (songs.length > 1) {
+        if (songs.length > 2) {
             setSongs(songs.filter((song) => song.id !== songId));
         } else {
-            toast.error("At least one song is required in the album.");
+            toast.error("At least two songs are required in the album.");
         }
     };
 
-    // Submit album form
     const onSubmitHandler = async (e) => {
         e.preventDefault();
         if (!conditionCheckedBox) {
             toast.error("Please accept the terms and conditions.");
             return;
         }
-        if (songs.length < 1) {
-            toast.error("Please add at least one song to the album.");
-            return;
-        }
 
         try {
             setIsLoading(true);
+
             const formData = new FormData();
             formData.append("albumTitle", albumTitle);
             formData.append("albumImage", albumImage);
             formData.append("id", id);
 
             songs.forEach((song, index) => {
-                formData.append(`songs[${index}][title]`, song.title);
-                formData.append(`songs[${index}][genre]`, song.genre);
-                formData.append(`songs[${index}][image]`, song.image);
-                formData.append(`songs[${index}][audio]`, song.audio);
+                formData.append(`songs[image]`, song.image);
+                formData.append(`songs[audio]`, song.audio);
+                formData.append(`songs[title]`, song.title);
+                formData.append(`songs[genre]`, song.genre);
             });
 
             const response = await axios.post(
@@ -122,18 +125,6 @@ const CreateAlbum = () => {
 
             if (response.data.success) {
                 toast.success("Album uploaded successfully!");
-                setAlbumTitle("");
-                setAlbumImage(null);
-                setSongs([
-                    {
-                        id: Date.now(),
-                        title: "",
-                        image: null,
-                        audio: null,
-                        genre: "Ballad",
-                        audioPreview: null,
-                    },
-                ]);
             } else {
                 toast.error(response.data.message);
             }
