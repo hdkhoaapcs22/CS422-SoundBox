@@ -75,8 +75,8 @@ const App = () => {
                         <Route path="/create-album" element={<CreateAlbum />} />
                         <Route path="/create-song" element={<CreateSong />} />
                         <Route path="/own-product" element={<OwnProduct />} />
-                        <Route path="/song/:id" element={<SongEdit />} />
-                        <Route path="/album/:id" element={<AlbumEdit />} />
+                        <Route path="/song/:songId" element={<SongEdit />} />
+                        <Route path="/album/:albumId" element={<AlbumEdit />} />
 
                         <Route
                             path="/admin/dashboard"

@@ -11,6 +11,7 @@ const Input = ({
     isPassword = false,
     callbackHiddenPassword,
     isHiddenPassword,
+    isDisabled = false,
 }) => {
     return (
         <div className="relative flex flex-col">
@@ -27,6 +28,7 @@ const Input = ({
                 className="w-full mt-1 mb-4 p-3 bg-transparent border border-[#B6FF52] rounded-md text-white focus:outline-none focus:ring-2 focus:ring-green-400 "
                 value={value}
                 onChange={(e) => onChangeValue(e.target.value)}
+                disabled = {isDisabled}
                 required
             />
             {isPassword && (

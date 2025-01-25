@@ -12,9 +12,8 @@ const OwnProduct = () => {
     // Fetch data from the backend
     const fetchData = async () => {
         try {
-            const response = await axios.post(
-                import.meta.env.VITE_BACKEND_URL + "/api/artist/own-product",
-                { artistId }
+            const response = await axios.get(
+                import.meta.env.VITE_BACKEND_URL + "/api/artist/own-product/" + artistId
             );
             // setData(response.data);
             if (response.data.success) {
