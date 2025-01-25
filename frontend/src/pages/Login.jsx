@@ -18,7 +18,7 @@ const Login = () => {
     const [isHiddenPassword, setIsHiddenPassword] = useState(true);
     const [currentState, setCurrentState] = useState("Login");
     const navigate = useNavigate();
-    const { setRole, setArtistId, setListenerId } = useContext(AppContext);
+    const { setRole, setUserId } = useContext(AppContext);
 
     const handleSubmit = async (event) => {
         event.preventDefault();
@@ -45,8 +45,9 @@ const Login = () => {
                     { email, password }
                 );
                 if (response.data.success) {
-                    setListenerId(response.data.id);
+                    setUserId(response.data.id);
                     navigate("/dashboard");
+                    setRole("listener");
                 } else {
                     toast.error(response.data.message);
                 }
@@ -57,7 +58,7 @@ const Login = () => {
                 );
                 if (response.data.success) {
                     const role = response.data.role;
-                    setArtistId(response.data.id);
+                    setUserId(response.data.id);
                     setRole(role);
                     if (role === "admin") {
                         navigate("/admin/dashboard");

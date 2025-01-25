@@ -52,6 +52,10 @@ const artistSchema = new mongoose.Schema({
         type: String,
         default: 'https://res.cloudinary.com/df1i75amy/image/upload/v1737724061/Frame_ipoi4s.png'
     },
+    gender: {
+        type: String,
+        default: 'Unknown'
+    },
     phone: {
         type: String,
         default: '0000000000',

@@ -13,8 +13,8 @@ import Dashboard from "./pages/listener/Dashboard";
 import Album from "./pages/listener/Album";
 import Artist from "./pages/listener/Artist";
 import Favorite from "./pages/listener/Favorite";
-import Profile from "./pages/listener/Profile";
 import Sound from "./pages/listener/Sound";
+import EditProfile from "./pages/EditProfile";
 
 import CreateAlbum from "./pages/artist/CreateAlbum";
 import CreateSong from "./pages/artist/CreateSong";
@@ -70,14 +70,16 @@ const App = () => {
                         <Route path="/album" element={<Album />} />
                         <Route path="/artist" element={<Artist />} />
                         <Route path="/favorite" element={<Favorite />} />
-                        <Route path="/profile" element={<Profile />} />
                         <Route path="/sound" element={<Sound />} />
                         <Route path="/create-album" element={<CreateAlbum />} />
                         <Route path="/create-song" element={<CreateSong />} />
                         <Route path="/own-product" element={<OwnProduct />} />
                         <Route path="/song/:songId" element={<SongEdit />} />
                         <Route path="/album/:albumId" element={<AlbumEdit />} />
-
+                        <Route
+                            path="/edit-profile"
+                            element={<EditProfile />}
+                        />
                         <Route
                             path="/admin/dashboard"
                             element={<AdminDashboard />}

@@ -6,14 +6,16 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 const OwnProduct = () => {
-    const { artistId } = useContext(AppContext);
+    const { userId } = useContext(AppContext);
     const [songs, setSongs] = useState([]);
     const [albums, setAlbums] = useState([]);
     // Fetch data from the backend
     const fetchData = async () => {
         try {
             const response = await axios.get(
-                import.meta.env.VITE_BACKEND_URL + "/api/artist/own-product/" + artistId
+                import.meta.env.VITE_BACKEND_URL +
+                    "/api/artist/own-product/" +
+                    userId
             );
             // setData(response.data);
             if (response.data.success) {

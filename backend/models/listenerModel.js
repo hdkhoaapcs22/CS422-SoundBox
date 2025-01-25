@@ -10,6 +10,22 @@ const listenerSchema = new mongoose.Schema({
         required: true,
         unique: true
     },
+    phone: {
+        type: String,
+        default: ''
+    },
+    dob: {
+        type: Date,
+        default: Date.now
+    },
+    gender: {
+        type: String,
+        default: ''
+    },
+    avatarUrl: {
+        type: String,
+        default: ''
+    },
     password: {
         type: String,
         required: true

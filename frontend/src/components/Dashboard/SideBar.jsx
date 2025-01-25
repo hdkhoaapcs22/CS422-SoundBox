@@ -41,7 +41,8 @@ const SideBar = () => {
                 icon: <FaPlusCircle />,
                 path: "/create-album",
             },
-            { name: "Own", icon: <FaMusic />, path: "/own-product" }
+            { name: "Own", icon: <FaMusic />, path: "/own-product" },
+            { name: "Edit Profile", icon: <FaUser />, path: "/edit-profile" }
         );
     }
 

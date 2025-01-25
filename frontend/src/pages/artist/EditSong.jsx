@@ -8,7 +8,7 @@ import Input from "../../components/Input";
 
 const EditSong = () => {
     const { songId } = useParams();
-    const { artistId } = useContext(AppContext);
+    const { userId } = useContext(AppContext);
     const [isEdit, setIsEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,7 +26,7 @@ const EditSong = () => {
             const response = await axios.get(
                 import.meta.env.VITE_BACKEND_URL +
                     "/api/artist/song/" +
-                    artistId +
+                    userId +
                     "/" +
                     songId
             );
@@ -85,7 +85,7 @@ const EditSong = () => {
             const response = await axios.post(
                 import.meta.env.VITE_BACKEND_URL +
                     "/api/artist/update-song/" +
-                    artistId +
+                    userId +
                     "/" +
                     songId,
                 formData
@@ -94,10 +94,9 @@ const EditSong = () => {
             if (response.data.success) {
                 toast.success("Song uploaded successfully!");
             } else {
-                toast.error(response.message);
+                toast.error(response.data.message);
             }
             setIsEdit(false);
-            console.log("Submit");
         } catch (error) {
             toast.error(error.message);
         } finally {
