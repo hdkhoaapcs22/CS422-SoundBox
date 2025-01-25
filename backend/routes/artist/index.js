@@ -1,8 +1,8 @@
-import createSoundRouter from "./createSound.js";
+import crudSoundRouter from "./crudSound.js";
 import artistProductRouter from "./product.js";
 
 const artistRoutes = (app) => {
-    app.use('/api/artist', createSoundRouter);
+    app.use('/api/artist', crudSoundRouter);
     app.use('/api/artist', artistProductRouter);
 }
 

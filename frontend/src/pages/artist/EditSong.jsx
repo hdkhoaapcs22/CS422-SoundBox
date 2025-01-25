@@ -12,6 +12,7 @@ const EditSong = () => {
     const [isEdit, setIsEdit] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
 
+    const [originalSongData, setOriginalSongData] = useState({});
     const [songTitle, setSongTitle] = useState("");
     const [genre, setGenre] = useState("Ballad");
     const [songImage, setSongImage] = useState(null);
@@ -30,9 +31,10 @@ const EditSong = () => {
                     songId
             );
             if (response.data.success) {
+                setOriginalSongData(response.data.song);
                 setSongTitle(response.data.song.title);
                 setGenre(response.data.song.genre);
-                setCollaborators(response.data.song.collaborators);
+                setCollaborators([...response.data.song.collaborators]);
                 setSongImage(response.data.song.imageUrl);
                 setAudio(response.data.song.audioUrl);
                 setAudioPreview(response.data.song.audioUrl);
@@ -47,6 +49,18 @@ const EditSong = () => {
     useEffect(() => {
         fetchSongInformation();
     }, []);
+
+    const toggleEdit = () => {
+        if (isEdit) {
+            setSongTitle(originalSongData.title);
+            setGenre(originalSongData.genre);
+            setCollaborators([...originalSongData.collaborators]);
+            setSongImage(originalSongData.imageUrl);
+            setAudio(originalSongData.audioUrl);
+            setAudioPreview(originalSongData.audioUrl);
+        }
+        setIsEdit(!isEdit);
+    };
 
     const onSubmitHandler = async (e) => {
         e.preventDefault();
@@ -67,24 +81,27 @@ const EditSong = () => {
             formData.append("collaborators", collaborators);
             formData.append("image", songImage);
             formData.append("audio", audio);
-            formData.append("id", artistId);
 
-            // const response = await axios.post(
-            //     import.meta.env.VITE_BACKEND_URL + "/api/artist/update-song",
-            //     formData
-            // );
+            const response = await axios.post(
+                import.meta.env.VITE_BACKEND_URL +
+                    "/api/artist/update-song/" +
+                    artistId +
+                    "/" +
+                    songId,
+                formData
+            );
 
-            // if (response.data.success) {
-            //     toast.success("Song uploaded successfully!");
-            // } else {
-            //     toast.error(response.message);
-            // }
+            if (response.data.success) {
+                toast.success("Song uploaded successfully!");
+            } else {
+                toast.error(response.message);
+            }
+            setIsEdit(false);
             console.log("Submit");
         } catch (error) {
             toast.error(error.message);
         } finally {
             setIsLoading(false);
-            setIsEdit(false);
         }
     };
 
@@ -110,7 +127,8 @@ const EditSong = () => {
         }
         return false;
     };
-
+    console.log("EditSong");
+    console.log(audioPreview);
     return (
         <div className="w-full h-full text-white p-10">
             <div className="flex justify-between">
@@ -120,7 +138,7 @@ const EditSong = () => {
                     className={` px-6 py-2 rounded mb-4
                         ${isEdit ? "bg-red-500" : "bg-green-500"}
                       `}
-                    onClick={() => setIsEdit(!isEdit)}
+                    onClick={toggleEdit}
                 >
                     {isEdit ? "Cancel" : "Edit"}
                 </button>
@@ -145,50 +163,59 @@ const EditSong = () => {
                                         setSongImage(e.target.files[0])
                                     }
                                     type="file"
-                                    name=""
+                                    name="imageFile"
                                     id="artistViewSingleSongImage"
                                     hidden
                                     disabled={!isEdit}
-                                    required
                                 />
                             </label>
                         </div>
                         <div>
                             {isEdit && (
-                                <>
+                                <div>
                                     <label
-                                        className="font-semibold block"
+                                        className="font-semibold block mb-4"
                                         htmlFor="artistViewSingleSongAudio"
                                     >
-                                        Sound File
+                                        Update New Sound File
                                     </label>
-                                    <input
-                                        id="artistViewSingleSongAudio"
-                                        type="file"
-                                        name="soundFile"
-                                        accept="audio/*"
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            setAudio(file);
-                                            if (file) {
-                                                setAudioPreview(
-                                                    URL.createObjectURL(file)
-                                                );
-                                            } else {
-                                                setAudioPreview(null);
-                                            }
-                                        }}
-                                        className="text-white p-2 rounded"
-                                        required
-                                    />
-                                </>
+                                    <div className="relative">
+                                        <label htmlFor="artistViewSingleSongAudio"></label>
+                                        <input
+                                            id="artistViewSingleSongAudio"
+                                            type="file"
+                                            name="soundFile"
+                                            accept="audio/*"
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                setAudio(file);
+                                                if (file) {
+                                                    setAudioPreview(
+                                                        URL.createObjectURL(
+                                                            file
+                                                        )
+                                                    );
+                                                } else {
+                                                    URL.revokeObjectURL(
+                                                        audioPreview
+                                                    );
+                                                    setAudioPreview(null);
+                                                }
+                                            }}
+                                        />
+                                    </div>
+                                </div>
                             )}
                             {audioPreview && (
                                 <div className="my-4">
                                     <label className="font-semibold block pb-2 mr-48">
                                         Preview Audio
                                     </label>
-                                    <audio controls className="w-full">
+                                    <audio
+                                        controls
+                                        key={audioPreview}
+                                        className="w-full"
+                                    >
                                         <source
                                             src={audioPreview}
                                             type="audio/mpeg"

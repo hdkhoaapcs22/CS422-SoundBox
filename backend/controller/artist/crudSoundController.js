@@ -103,5 +103,44 @@ const createAlbum = async (req, res) => {
     }
 };
 
+const updateSong = async (req, res) => {
+    try {
+        const { artistId, songId } = req.params;
+        const { songTitle, genre, collaborators } = req.body;
 
-export { createSong, createAlbum };
+        let imageResult = req.files.image && await uploadToCloudinary(req.files.image[0])
+        let audioResult = req.files.audio && await uploadToCloudinary(req.files.audio[0])
+
+        let formattedCollaborators = collaborators
+        if(collaborators.length > 0){
+            formattedCollaborators = collaborators.split(',');
+        }
+        else{
+            formattedCollaborators = []
+        }
+
+        const artist = await artistModel.findById(artistId);
+        if (!artist) {
+            return res.json({ success: false, message: 'Artist not found' });
+        }
+
+        const song = artist.songs.id(songId);
+        if (!song) {
+            return res.json({ success: false, message: 'Song not found' });
+        }
+
+        song.title = songTitle;
+        song.genre = genre;
+        song.imageUrl = imageResult ? imageResult.secure_url:song.imageUrl ;
+        song.audioUrl = audioResult ? audioResult.secure_url : song.audioUrl;
+        song.collaborators = formattedCollaborators;
+
+        await artist.save();
+        res.json({ success: true, message: 'Song updated successfully' });
+    } catch (error) {
+        console.error(error);
+        res.json({ success: false, message: error.message });
+    }
+}
+
+export { createSong, createAlbum, updateSong };
