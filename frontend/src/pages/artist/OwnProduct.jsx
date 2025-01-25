@@ -3,6 +3,7 @@ import axios from "axios";
 import { MdFavoriteBorder } from "react-icons/md";
 import { AppContext } from "../../global/AppContext";
 import { toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const OwnProduct = () => {
     const { artistId } = useContext(AppContext);
@@ -35,22 +36,25 @@ const OwnProduct = () => {
 
     return (
         <div className="w-full text-white p-10">
-            {/* Songs Section */}
-            <div className="mb-8">
-                <h2 className="text-lg font-bold mb-4">Songs</h2>
-                <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
-                    <div>#</div>
-                    <div>Sound</div>
-                    <div>Genre</div>
-                    <div>Likes</div>
-                    <div>Remove</div>
-                </div>
-                {songs.map((item, index) => (
-                    <div
-                        key={item._id}
-                        className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+            <h2 className="text-2xl font-bold mb-8">YOUR PRODUCT</h2>
+            <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
+                <div>#</div>
+                <div>Sound</div>
+                <div>Kind</div>
+                <div>Genre</div>
+                <div>Likes</div>
+                <div>Remove</div>
+            </div>
+            {songs.map((item, index) => (
+                <div
+                    key={item._id}
+                    className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+                >
+                    <span>{index + 1}</span>
+                    <Link
+                        to={`/song/${item._id}`}
+                        className="hover:cursor-pointer hover:underline hover:text-[#B6FF52]"
                     >
-                        <span>{index + 1}</span>
                         <div className="flex items-center gap-2">
                             <img
                                 src={item.imageUrl}
@@ -59,39 +63,34 @@ const OwnProduct = () => {
                             />
                             <span>{item.title}</span>
                         </div>
-                        <div>{item.genre}</div>
-                        <div className="flex items-center gap-1">
-                            <MdFavoriteBorder />
-                            <span>{item.likes}</span>
-                        </div>
-                        <div>
-                            <button
-                                type="button"
-                                className="bg-red-500 p-2 rounded mt-2"
-                            >
-                                Remove Song
-                            </button>
-                        </div>
+                    </Link>
+                    <div>Song</div>
+                    <div>{item.genre}</div>
+                    <div className="flex items-center gap-1">
+                        <MdFavoriteBorder />
+                        <span>{item.likes}</span>
                     </div>
-                ))}
-            </div>
-
-            {/* Albums Section */}
-            <div>
-                <h2 className="text-lg font-bold mb-4">Albums</h2>
-                <div className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] text-gray-400 text-sm font-medium mb-2 border-b border-gray-700 pb-2">
-                    <div>#</div>
-                    <div>Album</div>
-                    <div></div>
-                    <div></div>
-                    <div>Actions</div>
+                    <div>
+                        <button
+                            type="button"
+                            className="bg-red-500 p-2 rounded mt-2"
+                        >
+                            Remove
+                        </button>
+                    </div>
                 </div>
-                {albums.map((item, index) => (
-                    <div
-                        key={item._id}
-                        className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+            ))}
+
+            {albums.map((item, index) => (
+                <div
+                    key={item._id}
+                    className="grid grid-cols-[1fr_2fr_1fr_1fr_1fr_1fr] items-center text-sm mb-4 py-2 border-b border-gray-700"
+                >
+                    <span>{songs.length + index + 1}</span>
+                    <Link
+                        to="/album/:id"
+                        className="hover:cursor-pointer hover:underline hover:text-[#B6FF52]"
                     >
-                        <span>{index + 1}</span>
                         <div className="flex items-center gap-2">
                             <img
                                 src={item.image}
@@ -100,19 +99,29 @@ const OwnProduct = () => {
                             />
                             <span>{item.name}</span>
                         </div>
-                        <div></div>
-                        <div></div>
-                        <div>
-                            <button
-                                type="button"
-                                className="bg-red-500 text-white p-2 rounded mt-2"
-                            >
-                                Remove Album
-                            </button>
-                        </div>
+                    </Link>
+                    <div>Album</div>
+                    <div></div>
+                    <div className="flex items-center gap-1">
+                        <MdFavoriteBorder />
+                        <span>
+                            {item.songs.reduce(
+                                (acc, curr) => acc + curr.likes,
+                                0
+                            )}
+                        </span>
                     </div>
-                ))}
-            </div>
+
+                    <div>
+                        <button
+                            type="button"
+                            className="bg-red-500 text-white p-2 rounded mt-2"
+                        >
+                            Remove
+                        </button>
+                    </div>
+                </div>
+            ))}
         </div>
     );
 };

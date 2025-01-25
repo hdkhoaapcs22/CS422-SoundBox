@@ -1,28 +1,24 @@
 import { useState } from "react";
 import { FaTachometerAlt, FaPlusCircle } from "react-icons/fa";
-import AdminDashboard from "../../../pages/admin/AdminDashboard";
-import CreateArtistAccount from "../../../pages/admin/CreateArtistAccount";
 import AppTitle from "../../AppTitle";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const AdminSideBar = () => {
-    const [active, setActive] = useState("Dashboard");
+    const location = useLocation();
+    const navigate = useNavigate();
 
     const menuItems = [
-        { name: "Dashboard", icon: <FaTachometerAlt /> },
-        { name: "Add Artist Account", icon: <FaPlusCircle /> },
+        {
+            name: "Dashboard",
+            icon: <FaTachometerAlt />,
+            path: "/admin/dashboard",
+        },
+        {
+            name: "Add Artist Account",
+            icon: <FaPlusCircle />,
+            path: "/admin/add-artist",
+        },
     ];
-
-    let page;
-    switch (active) {
-        case "Dashboard":
-            page = <AdminDashboard />;
-            break;
-        case "Add Artist Account":
-            page = <CreateArtistAccount />;
-            break;
-        default:
-            page = <div>Page not found</div>;
-    }
 
     return (
         <div className="h-full flex gap-4">
@@ -38,7 +34,7 @@ const AdminSideBar = () => {
                                 key={item.name}
                                 className={`flex items-center space-x-2 pl-3 py-4 rounded-md cursor-pointer flex-grow
                             ${
-                                active === item.name
+                                location.pathname === item.path
                                     ? "text-[#B6FF52]"
                                     : "text-gray-300"
                             }`}
@@ -47,13 +43,14 @@ const AdminSideBar = () => {
                                 }}
                             >
                                 <span className="text-lg">{item.icon}</span>
-                                <span className="text-sm whitespace-nowrap">{item.name}</span>
+                                <span className="text-sm whitespace-nowrap">
+                                    {item.name}
+                                </span>
                             </li>
                         ))}
                     </ul>
                 </div>
             </div>
-            {page}
         </div>
     );
 };
