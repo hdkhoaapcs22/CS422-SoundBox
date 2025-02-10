@@ -9,7 +9,7 @@ To run the frontend, artist, and admin, use **`npm run dev`**.
 ### Components
 
 The project has two big problems, but it's optional to fix.
-- No reponsive app.
+- It's not reponsive app, but we can fix by using Reponsive design in **TailwindCss** like **sm:flex**, **md:text-center** for example.
 - Reload will make the side bar wrong.
 
 **`SideBar`**: the side bar of three roles. It has a logic to gender the side bar for each role. **It has an error**
