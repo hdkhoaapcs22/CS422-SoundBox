@@ -149,7 +149,11 @@ const CreateSong = () => {
                                     <label className="font-semibold block pb-2">
                                         Preview Audio
                                     </label>
-                                    <audio controls key ={audioPreview} className="w-full">
+                                    <audio
+                                        controls
+                                        key={audioPreview}
+                                        className="w-full"
+                                    >
                                         <source
                                             src={audioPreview}
                                             type="audio/mpeg"
