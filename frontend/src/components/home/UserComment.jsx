@@ -44,7 +44,7 @@ const UserComment = () => {
     };
 
     return (
-        <div className=" text-white py-16 items-center">
+        <div className="flex flex-col text-white py-16 items-center overflow-hidden">
             <div className="flex gap-36 justify-start">
                 <div className="text-4xl font-bold w-72 justify-start ">
                     WHAT ARE THEY SAYING?
@@ -75,12 +75,12 @@ const UserComment = () => {
             <div className="relative max-w-[96%] overflow-hidden">
                 <div
                     id="slider"
-                    className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide"
+                    className="flex gap-6 overflow-x-auto scroll-smooth scrollbar-hide justify-center"
                 >
                     {comments.map((comment, index) => (
                         <div
                             key={index}
-                            className="min-w-[300px] bg-white/10 shadow-lg text-white rounded-lg px-6 py-10 border border-gray-500"
+                            className="w-1/5 bg-white/10 shadow-lg text-white rounded-lg px-6 py-10 border border-gray-500"
                         >
                             {/* User Info */}
                             <div className="flex items-center gap-4 mb-4">

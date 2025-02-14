@@ -28,6 +28,7 @@ import CreateArtistAccount from "./pages/admin/CreateArtistAccount";
 import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
+import "./index.css";
 
 const App = () => {
     const location = useLocation();
@@ -41,12 +42,13 @@ const App = () => {
         "/",
         "/intro-artist",
         "/intro-sound",
+        "/intro-album",
         "/login",
         "/forgot-password",
         "/reset-password/:id",
     ];
     return (
-        <div className=" h-full bg-gradient-to-br from-[#031b47] to-[#0033a1]">
+        <div className="h-full gradient-bg overflow-hidden">
             <ToastContainer />
             {pagesWithNavbarAndFooter.includes(location.pathname) && <Navbar />}
             <div className="flex">

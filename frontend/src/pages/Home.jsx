@@ -9,11 +9,11 @@ import ExpressYourselfSection from "../components/home/ExpressYourSelf";
 
 const Home = () => {
     return (
-        <div className="px-60">
+        <div className="flex flex-col items-center justify-center w-full" id="Home">
             <ExpressYourselfSection />
             <TopSongFigure />
-            <div className="flex justify-end -mx-60">
-                <img src={assets.melody2} alt="" className="w-[700px] h-24 mb-10" />
+            <div className="flex justify-center w-full">
+                <img src={assets.melody2} alt="" className="w-20 md:w-full sm:w-full h-24 mb-10" />
             </div>
             <TopTierFeature />
             <UserComment />

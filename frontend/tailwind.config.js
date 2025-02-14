@@ -8,6 +8,9 @@ export default {
     extend: {
       colors: {
         neonGreen: 'rgb(182, 255, 82)',
+      },
+      fontFamily: {
+        custom: ["ClashDisplay", 'sans-serif'],
       }
     },
   },

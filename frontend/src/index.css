@@ -1,7 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-  
+
 .clip-triangle {
     clip-path: polygon(20% 0%, 100% 50%, 20% 100%);
 }
@@ -12,6 +12,51 @@ a.active {
 
 input:-webkit-autofill {
     background-color: transparent !important;
-    -webkit-text-fill-color: white !important; 
-    transition: background-color 5000s ease-in-out 0s; 
+    -webkit-text-fill-color: white !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
+.gradient-bg {
+    background: linear-gradient(110deg, #064BB5 0%, #040c18 50%, #05439f 100%);
+    min-height: 100vh;
+}
+
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('./fonts/ClashDisplay-Light.woff2') format('woff2'),
+        url('./fonts/ClashDisplay-Light.woff') format('woff'),
+        url('./fonts/ClashDisplay-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('./fonts/ClashDisplay-Regular.woff2') format('woff2'),
+        url('./fonts/ClashDisplay-Regular.woff') format('woff'),
+        url('./fonts/ClashDisplay-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('./fonts/ClashDisplay-Semibold.woff2') format('woff2'),
+        url('./fonts/ClashDisplay-Semibold.woff') format('woff'),
+        url('./fonts/ClashDisplay-Semibold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'ClashDisplay';
+    src: url('./fonts/ClashDisplay-Medium.woff2') format('woff2'),
+        url('./fonts/ClashDisplay-Medium.woff') format('woff'),
+        url('./fonts/ClashDisplay-Medium.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+}
+
+*{
+    font-family: 'ClashDisplay';
 }

@@ -42,7 +42,7 @@ const Download = () => {
                 {downloadSection.map((section, index) => (
                     <div
                         key={index}
-                        className="flex gap-4 items-center justify-center bg-white rounded-xl px-4 py-2"
+                        className="flex gap-4 items-center justify-center bg-white rounded-xl px-4 py-2 min-w-[200px]"
                     >
                         <img
                             src={section.image}
@@ -50,7 +50,7 @@ const Download = () => {
                         />
                         <div className="text-left">
                             <p className="text-base">{section.message}</p>
-                            <p className="text-2xl font-medium">
+                            <p className="text-xl font-medium">
                                 {section.platform}
                             </p>
                         </div>
