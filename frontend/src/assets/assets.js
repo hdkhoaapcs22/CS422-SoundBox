@@ -21,6 +21,20 @@ import reputation from "./reputation.jpg";
 import harry_house from "./harryhouse.png";
 import aespa from "./aespa.jpg";
 import listen_popular_icon from "./listen_popular_icon.png";
+import right_arrow_button from "./right_arrow_button.png";
+import left_arrow_button from "./left_arrow_button.png";
+import banner_1 from "./banner1.png";
+import banner_2 from "./banner2.jpg";
+import banner_3 from "./banner3.png";
+import artist_highlight from "./artist_highlight.png";
+import rnb from "./rnb.png";
+import kpop from "./kpop.png";
+import pop from "./pop.png";
+import rock from "./rock.png";
+import edm from "./edm.png";
+import hiphop from "./hiphop.png";
+import sound_banner_1 from "./sound_banner_1.jpg";
+import sound_banner_2 from "./sound_banner_2.jpg";
 
 const assets = {
   avatarUser1,
@@ -46,6 +60,20 @@ const assets = {
   reputation,
   harry_house,
   aespa,
+  right_arrow_button,
+  left_arrow_button,
+  banner_1,
+  banner_2,
+  banner_3,
+  artist_highlight,
+  rnb,
+  kpop,
+  pop,
+  rock,
+  edm,
+  hiphop,
+  sound_banner_1,
+  sound_banner_2,
 };
 
 export const albums = {
@@ -139,6 +167,20 @@ export const artist_with_song = [
       "Ludens"
     ],
     image: background_image,
+  },
+  {
+    artist: "BRING ME THE HORIZON 2",
+    songs: [
+      "Itch For the Curve",
+      "Kingslayer",
+      "1x1",
+      "Ludens",
+      "Dear Diary",
+      "Parasite Eve",
+      "Teardrops",
+      "Obey",
+    ],
+    image: harry_house,
   },
 ];
 

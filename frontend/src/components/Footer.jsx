@@ -19,7 +19,7 @@ const Footer = () => {
             <a href="intro-album" className="hover:text-white">
               Album
             </a>
-            <a href="#" className="hover:text-white">
+            <a href="intro-artist" className="hover:text-white">
               Artist
             </a>
             <a href="#" className="hover:text-white">

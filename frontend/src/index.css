@@ -60,3 +60,12 @@ input:-webkit-autofill {
 *{
     font-family: 'ClashDisplay';
 }
+
+@layer base {
+    .font-outline-2 {
+      -webkit-text-stroke: 2px #ffffff25;
+    }
+    .font-outline-4 {
+      -webkit-text-stroke: 4px #ffffff25;
+    }
+  }
