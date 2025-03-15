@@ -15,7 +15,7 @@ const Input = ({
 }) => {
     return (
         <div className="relative flex flex-col">
-            <label className="block text-gray-300">{label}</label>
+            <label className="block text-gray-300 font-semibold">{label}</label>
             <input
                 type={
                     isPassword

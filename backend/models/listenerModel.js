@@ -34,6 +34,16 @@ const listenerSchema = new mongoose.Schema({
         type: Array,
         default: []
     },
+    recentlyPlayed: [{
+        songID: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'song'
+        },
+        playedAt: {
+            type: Date,
+            default: Date.now
+        }
+    }],
 }, {
     timestamps: true,
     minimize: false

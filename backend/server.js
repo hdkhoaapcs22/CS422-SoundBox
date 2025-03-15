@@ -6,6 +6,7 @@ import connectCloudinary from './config/cloudinary.js';
 import userRoutes from './routes/index.js';
 import adminRoutes from './routes/admin/index.js';
 import artistRoutes from './routes/artist/index.js';
+import listenerRoutes from './routes/listener/index.js';
 
 // App Config
 const app = express();
@@ -25,6 +26,7 @@ app.get('/', (req, res) => {
 userRoutes(app);
 adminRoutes(app);
 artistRoutes(app);
+listenerRoutes(app);
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);

@@ -1,7 +1,7 @@
 import validator from 'validator';
 import nodemailer  from 'nodemailer';
 import listenerModel from '../models/listenerModel.js';
-import artistModel from '../models/artistModel.js'; 
+import {artistModel} from '../models/artistModel.js'; 
 import adminModel from '../models/adminModel.js';
 
 const register = async (req, res) => {

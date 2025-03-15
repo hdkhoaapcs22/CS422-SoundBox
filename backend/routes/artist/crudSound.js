@@ -4,7 +4,7 @@ import upload from '../../middleware/multer.js';
 
 const crudSoundRouter = express.Router();
 
-crudSoundRouter.post('/add-song', upload.fields([{name: 'image', maxCount: 1},{name: 'audio', maxCount: 1}]),  createSong);
+crudSoundRouter.post("/add-song", upload.fields([{name: 'image', maxCount: 1},{name: 'audio', maxCount: 1}]), createSong);
 crudSoundRouter.post("/add-album", upload.fields([
     { name: "albumImage", maxCount: 1 },
     { name: "songs[image]", maxCount: 10 },

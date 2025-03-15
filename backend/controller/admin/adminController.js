@@ -1,4 +1,4 @@
-import artistModel from '../../models/artistModel.js';
+import {artistModel} from '../../models/artistModel.js';
 import validator from 'validator';
 
 const createArtist = async (req, res) => {

@@ -22,6 +22,7 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
+        console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
         try {
             if (currentState === "Sign Up") {
                 if (!conditionCheckedBox) {
@@ -76,7 +77,7 @@ const Login = () => {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gradient-to-b from-blue-900 to-black text-white px-60 py-10 gap-40">
+        <div className="flex items-center justify-center w-full min-h-screen text-white px-60 py-10 gap-40">
             {/* Left Side - Login Form */}
             <div className="w-full md:w-1/2">
                 <AppTitle />

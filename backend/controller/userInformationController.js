@@ -1,5 +1,5 @@
 import listenerModel from '../models/listenerModel.js';
-import artistModel from '../models/artistModel.js'; 
+import {artistModel} from '../models/artistModel.js'; 
 import cloudinary from 'cloudinary'
 
 const uploadToCloudinary = async (file) => {

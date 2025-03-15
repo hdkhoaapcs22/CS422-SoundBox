@@ -1,146 +1,193 @@
-import artistModel from "../../models/artistModel.js";
-import cloudinary from 'cloudinary'
+import { artistModel, Album, Song } from "../../models/artistModel.js";
+import cloudinary from "cloudinary";
+import dotenv from "dotenv";
+import path from "path";
+import fs from "fs";
+
+dotenv.config();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_NAME || "MISSING",
+  api_key: process.env.CLOUDINARY_API_KEY || "MISSING",
+  api_secret: process.env.CLOUDINARY_SECRET_KEY || "MISSING",
+});
 
 const uploadToCloudinary = async (file) => {
-    return new Promise((resolve, reject) => {
-        cloudinary.v2.uploader.upload(file.path, { resource_type: 'auto' }, (err, result) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve(result); // Return the result (which includes URL)
-            }
-        });
-    });
+  return new Promise((resolve, reject) => {
+    cloudinary.v2.uploader.upload(
+      file.path,
+      { resource_type: "auto" },
+      (err, result) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve(result); // Return the result (which includes URL)
+        }
+      }
+    );
+  });
 };
 
 const createSong = async (req, res) => {
-    try {
-        const  {songTitle, genre, collaborators, id} = req.body
+  try {
+    const { songTitle, genre, collaborators, artistID, albumID, duration } =
+      req.body;
 
-        let imageResult = await uploadToCloudinary(req.files.image[0])
-        let audioResult = await uploadToCloudinary(req.files.audio[0])
-
-        let formattedCollaborators = collaborators
-        if(collaborators.length > 0){
-            formattedCollaborators = collaborators.split(',');
-        }
-        else{
-            formattedCollaborators = []
-        }
-
-        const artist = await artistModel.findById(id);
-        if (!artist) {
-            return res.json({ success: false, message: 'Artist not found' });
-        }
-
-        const newSong = {
-            title: songTitle,
-            genre,
-            imageUrl: imageResult.secure_url, 
-            audioUrl: audioResult.secure_url,
-            collaborators: formattedCollaborators
-        };
-        artist.songs.push(newSong);
-
-        await artist.save();
-        
-        res.json({success: true, message: 'Product added successfully'})
-    } catch (error) {
-        console.error(error);
-        res.json({success: false, message: error.message})
+    const artist = await artistModel.findById(artistID);
+    if (!artist) {
+      return res
+        .status(404)
+        .json({ success: false, message: "Artist not found" });
     }
-}
+
+    if (!req.files || !req.files.image || !req.files.audio) {
+      return res.status(400).json({
+        success: false,
+        message: "Image and audio files are required",
+      });
+    }
+
+    let imageResult = await uploadToCloudinary(req.files.image[0]);
+    let audioResult = await uploadToCloudinary(req.files.audio[0]);
+
+    const formattedCollaborators = collaborators
+      ? collaborators.split(",")
+      : [];
+
+    const newSong = new Song({
+      title: songTitle,
+      genre,
+      imageUrl: imageResult.secure_url,
+      audioUrl: audioResult.secure_url,
+      collaborators: formattedCollaborators,
+      artistID,
+      albumID: albumID || null,
+      duration: duration,
+    });
+
+    await newSong.save();
+
+    // If albumID is provided, add song to album
+    if (albumID) {
+      const album = await Album.findById(albumID);
+      if (album) {
+        album.songs.push(newSong._id);
+        await album.save();
+      }
+    }
+
+    res.status(201).json({
+      success: true,
+      message: "Song added successfully",
+      song: newSong,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: error.message });
+  }
+};
 
 // Create Album Handler
 const createAlbum = async (req, res) => {
-    try {
-        const { albumTitle, id} = req.body;
-        const { title, genre,} = req.body.songs;
+  try {
+    const { albumTitle, id } = req.body;
+    const { title, genre, duration, collaborators } = req.body.songs;
 
-        const songAudios = req.files['songs[audio]']
-        const songImages = req.files['songs[image]']
+    const songAudios = req.files["songs[audio]"];
+    const songImages = req.files["songs[image]"];
 
-        const albumImage = req.files.albumImage[0]
-        
-        const artist = await artistModel.findById(id);
-        if (!artist) {
-            return res.json({ success: false, message: 'Artist not found' });
-        }
+    const albumImage = req.files.albumImage[0];
 
-        const songPromises = title.map(async (songTitle, index) => {
-            const songImageResult = await uploadToCloudinary(songImages[index]);
-            const songAudioResult = await uploadToCloudinary(songAudios[index]);
-
-            return {
-                title: songTitle,
-                genre: genre[index],
-                imageUrl: songImageResult.secure_url,  
-                audioUrl: songAudioResult.secure_url,  
-            };
-        });
-
-        const songsData = await Promise.all(songPromises);
-
-        const albumImageResult = await uploadToCloudinary(albumImage);
-
-        const albumData = {
-            name: albumTitle,
-            image: albumImageResult.secure_url,  
-            songs: songsData 
-        };
-
-        await artistModel.findByIdAndUpdate(
-            id, 
-            { $push: { albums: albumData } },
-            { new: true } 
-        );
-        
-
-        res.json({ success: true, message: 'Album created successfully' });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
+    const artist = await artistModel.findById(id);
+    if (!artist) {
+      return res.json({ success: false, message: "Artist not found" });
     }
+
+    const albumImageResult = await uploadToCloudinary(albumImage);
+
+    const albumData = new Album({
+      name: albumTitle,
+      image: albumImageResult.secure_url,
+      artistID: id,
+      songs: [],
+    });
+
+    await albumData.save();
+
+    const songPromises = title.map(async (songTitle, index) => {
+      const songImageResult = await uploadToCloudinary(songImages[index]);
+      const songAudioResult = await uploadToCloudinary(songAudios[index]);
+
+      const newSong = new Song({
+        title: songTitle,
+        genre: genre[index],
+        imageUrl: songImageResult.secure_url,
+        audioUrl: songAudioResult.secure_url,
+        artistID: id,
+        albumID: albumData._id,
+        duration: duration[index],
+        collaborators: collaborators[index].split(","),
+      });
+
+      await newSong.save();
+      return newSong._id;
+    });
+
+    // const songsData = await Promise.all(songPromises);
+    // albumData.songs = songsData;
+    // await albumData.save();
+    const songIds = await Promise.all(songPromises);
+
+    // Update album with song references
+    albumData.songs = songIds;
+    await albumData.save();
+
+    res.json({ success: true, message: "Album created successfully" });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
 };
 
 const updateSong = async (req, res) => {
-    try {
-        const { artistId, songId } = req.params;
-        const { songTitle, genre, collaborators } = req.body;
+  try {
+    const { artistId, songId } = req.params;
+    const { songTitle, genre, collaborators } = req.body;
 
-        let imageResult = req.files.image && await uploadToCloudinary(req.files.image[0])
-        let audioResult = req.files.audio && await uploadToCloudinary(req.files.audio[0])
+    let imageResult =
+      req.files.image && (await uploadToCloudinary(req.files.image[0]));
+    let audioResult =
+      req.files.audio && (await uploadToCloudinary(req.files.audio[0]));
 
-        let formattedCollaborators = collaborators
-        if(collaborators.length > 0){
-            formattedCollaborators = collaborators.split(',');
-        }
-        else{
-            formattedCollaborators = []
-        }
-
-        const artist = await artistModel.findById(artistId);
-        if (!artist) {
-            return res.json({ success: false, message: 'Artist not found' });
-        }
-
-        const song = artist.songs.id(songId);
-        if (!song) {
-            return res.json({ success: false, message: 'Song not found' });
-        }
-
-        song.title = songTitle;
-        song.genre = genre;
-        song.imageUrl = imageResult ? imageResult.secure_url:song.imageUrl ;
-        song.audioUrl = audioResult ? audioResult.secure_url : song.audioUrl;
-        song.collaborators = formattedCollaborators;
-
-        await artist.save();
-        res.json({ success: true, message: 'Song updated successfully' });
-    } catch (error) {
-        console.error(error);
-        res.json({ success: false, message: error.message });
+    let formattedCollaborators = collaborators;
+    if (collaborators.length > 0) {
+      formattedCollaborators = collaborators.split(",");
+    } else {
+      formattedCollaborators = [];
     }
-}
+
+    const artist = await artistModel.findById(artistId);
+    if (!artist) {
+      return res.json({ success: false, message: "Artist not found" });
+    }
+
+    const song = await Song.findById(songId);
+    if (!song) {
+      return res.json({ success: false, message: "Song not found" });
+    }
+
+    song.title = songTitle;
+    song.genre = genre;
+    song.imageUrl = imageResult ? imageResult.secure_url : song.imageUrl;
+    song.audioUrl = audioResult ? audioResult.secure_url : song.audioUrl;
+    song.collaborators = formattedCollaborators;
+
+    await song.save();
+    res.json({ success: true, message: "Song updated successfully" });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
+};
 
 export { createSong, createAlbum, updateSong };

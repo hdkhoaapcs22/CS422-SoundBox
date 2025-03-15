@@ -1,4 +1,4 @@
-import artistModel from '../../models/artistModel.js';
+import {artistModel} from '../../models/artistModel.js';
 
 const ownProduct = async (req, res) => {
     try {
