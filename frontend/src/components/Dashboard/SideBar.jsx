@@ -49,7 +49,7 @@ const SideBar = () => {
   }
 
   return (
-    <div className="w-full h-screen bg-[#0E1B31] text-white flex flex-col">
+    <div className="w-full bg-[#0E1B31] text-white flex flex-col">
       <div className="flex px-9 mt-6 mb-8">
         <AppTitle />
       </div>

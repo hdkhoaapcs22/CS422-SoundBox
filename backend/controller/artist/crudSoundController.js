@@ -1,8 +1,6 @@
 import { artistModel, Album, Song } from "../../models/artistModel.js";
 import cloudinary from "cloudinary";
 import dotenv from "dotenv";
-import path from "path";
-import fs from "fs";
 
 dotenv.config();
 
@@ -56,11 +54,12 @@ const createSong = async (req, res) => {
 
     const newSong = new Song({
       title: songTitle,
-      genre,
+      genre: genre,
       imageUrl: imageResult.secure_url,
       audioUrl: audioResult.secure_url,
       collaborators: formattedCollaborators,
-      artistID,
+      artistID: artistID,
+      name: artist.name,
       albumID: albumID || null,
       duration: duration,
     });
@@ -124,6 +123,7 @@ const createAlbum = async (req, res) => {
         imageUrl: songImageResult.secure_url,
         audioUrl: songAudioResult.secure_url,
         artistID: id,
+        name: artist.name,
         albumID: albumData._id,
         duration: duration[index],
         collaborators: collaborators[index].split(","),
@@ -133,9 +133,6 @@ const createAlbum = async (req, res) => {
       return newSong._id;
     });
 
-    // const songsData = await Promise.all(songPromises);
-    // albumData.songs = songsData;
-    // await albumData.save();
     const songIds = await Promise.all(songPromises);
 
     // Update album with song references

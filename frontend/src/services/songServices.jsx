@@ -13,3 +13,17 @@ export const getRecentlyPlayed = async (listenerID, limit = 10) => {
     return [];
   }
 };
+
+export const updateLikeCount = async (songID, like = true) => {
+  try {
+    const response = like ? await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/songs/like-song/${songID}`
+    ) : await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/songs/unlike-song/${songID}`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error liking song:", error);
+    throw error;
+  }
+};

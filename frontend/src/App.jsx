@@ -29,11 +29,14 @@ import { Routes, Route, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import "./index.css";
-import PlayerContextProvider from "./context/PlayerContext";
 import SearchHeader from "./components/SearchHeader";
 import Player from "./components/Player";
-import { PlayerContext } from "./context/PlayerContext";
+import { PlayerContext } from "./global/PlayerContext";
+import AdminSideBar from "./components/Admin/Dashboard/AdminSideBar";
+import SearchScreen from "./pages/SearchScreen";
+
 const App = () => {
+  const { audioRef, track } = useContext(PlayerContext);
   const location = useLocation();
   const pagesWithNavbarAndFooter = [
     "/",
@@ -51,20 +54,35 @@ const App = () => {
     "/reset-password/:id",
   ];
   const pagesWithSearchHeaderandPlayer = [
-    // "/",
     "/dashboard",
     "/album",
     "/artist",
     "/sound",
+    "/search"
   ];
+  const isAdminRoute = ["/admin/dashboard", "/admin/add-artist"];
   return (
     <div className="w-full h-full gradient-bg overflow-hidden">
       <ToastContainer />
       {pagesWithNavbarAndFooter.includes(location.pathname) && <Navbar />}
-      <div className= {`flex ${!noSidebarRoutes.includes(location.pathname) ? "h-screen" : "" }`}>
+      <div
+        className={`flex ${
+          !noSidebarRoutes.includes(location.pathname) ? "h-screen" : ""
+        }`}
+      >
         {!noSidebarRoutes.includes(location.pathname) && (
-          <div className="w-1/5 h-screen bg-[#0E1B31] text-white">
-            <SideBar />
+          <div
+            className={`w-[15%] flex-none ${
+              pagesWithSearchHeaderandPlayer.includes(location.pathname)
+                ? "h-[90%]"
+                : "h-screen"
+            } bg-[#0E1B31] text-white`}
+          >
+            {isAdminRoute.includes(location.pathname) ? (
+              <AdminSideBar />
+            ) : (
+              <SideBar />
+            )}
           </div>
         )}
         <div className="flex flex-col">
@@ -85,18 +103,18 @@ const App = () => {
               <Route path="/artist" element={<Artist />} />
               <Route path="/favorite" element={<Favorite />} />
               <Route path="/sound" element={<Sound />} />
-              <Route path="/create-album" element={<CreateAlbum/>} />
+              <Route path="/create-album" element={<CreateAlbum />} />
               <Route path="/create-song" element={<CreateSong />} />
               <Route path="/own-product" element={<OwnProduct />} />
               <Route path="/song/:songId" element={<SongEdit />} />
               <Route path="/album/:albumId" element={<AlbumEdit />} />
               <Route path="/edit-profile" element={<EditProfile />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
-
               <Route
                 path="/admin/add-artist"
                 element={<CreateArtistAccount />}
               />
+              <Route path="/search" element={<SearchScreen />} />
             </Routes>
           </div>
         </div>
@@ -105,6 +123,7 @@ const App = () => {
       {pagesWithSearchHeaderandPlayer.includes(location.pathname) && (
         <div className="h-[10%] fixed bottom-0 w-full">
           <Player />
+          <audio ref={audioRef} src={track.audioUrl} preload="auto" />
         </div>
       )}
     </div>

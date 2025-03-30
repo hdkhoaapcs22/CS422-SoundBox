@@ -22,7 +22,7 @@ const Login = () => {
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
+        // console.log("Backend URL:", import.meta.env.VITE_BACKEND_URL);
         try {
             if (currentState === "Sign Up") {
                 if (!conditionCheckedBox) {

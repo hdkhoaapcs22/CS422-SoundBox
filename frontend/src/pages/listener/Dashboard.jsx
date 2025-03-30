@@ -5,8 +5,8 @@ import BannerDashboard from "../../components/Dashboard/BannerDashboard";
 import NewRelease from "../../components/Dashboard/NewRelease";
 const Dashboard = () => {
   return (
-    <div className="w-full h-[88%] flex flex-row overflow-hidden">
-      <div className="w-[56%] h-full overflow-y-auto scrollbar-hide">
+    <div className="w-screen h-[88%] flex flex-row overflow-hidden">
+      <div className="w-[60%] h-full overflow-y-auto scrollbar-hide">
         <BannerDashboard />
         <RecentlyPlayed />
         <NewRelease />

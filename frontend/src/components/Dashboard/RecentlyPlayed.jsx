@@ -1,54 +1,37 @@
 import React from "react";
-import assets from "../../assets/assets";
 import SongList from "../SongList";
-
-const recentlyPlayedSongs = [
-  {
-    id: 1,
-    title: "POP!",
-    name: "Nayeon",
-    imageUrl: assets.reputation,
-    likes: 922,
-  },
-  {
-    id: 2,
-    title: "Bad Habit",
-    name: "Steve Lacy",
-    imageUrl: assets.harry_house,
-    likes: 922,
-  },
-  {
-    id: 3,
-    title: "Gunjou",
-    name: "Yoasobi",
-    imageUrl: assets.pink_venom,
-    likes: 922,
-  },
-  {
-    id: 4,
-    title: "Flying High",
-    name: "JKT48",
-    imageUrl: assets.aespa,
-    likes: 922,
-  },
-  {
-    id: 5,
-    title: "Until I Found You",
-    name: "Stephen Sanchez",
-    imageUrl: assets.sound_banner_1,
-    likes: 922,
-  },
-  {
-    id: 6,
-    title: "Until I Found You",
-    name: "Stephen Sanchez",
-    imageUrl: assets.sound_banner_1,
-    likes: 922,
-  },
-];
+import { useEffect, useState, useContext } from "react";
+import axios from "axios";
+import { AppContext } from "../../global/AppContext";
 
 const RecentlyPlayed = () => {
-  return <SongList title="Recently Played" songs={recentlyPlayedSongs} />;
+  const [songs, setSongs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const { userId } = useContext(AppContext);
+  useEffect(() => {
+    const fetchRecentlyPlayed = async () => {
+      console.log("User ID:", userId);
+      try {
+        const response = await axios.get(
+          import.meta.env.VITE_BACKEND_URL +
+            `/api/songs/recently-played/${userId}`
+        );
+        setSongs(response.data);
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRecentlyPlayed();
+  }, [userId]);
+
+  if (loading) return <p>Loading new releases...</p>;
+  if (error) return <p>Error: {error}</p>;
+
+  return <SongList title="Recently Played" songs={songs} />;
 };
 
 export default RecentlyPlayed;

@@ -65,7 +65,7 @@ const CreateArtistAccount = () => {
     };
 
     return (
-        <div className="h-full text-white p-10 w-3/5">
+        <div className="h-full text-white p-10">
             <p className="text-5xl pt-10 font-bold mb-6">
                 Add new artist account
             </p>

@@ -43,7 +43,7 @@ const songs = [
 
 const TodayTopChart = () => {
   return (
-    <div className="w-full max-w-[350px] px-2 text-white overflow-hidden">
+    <div className="w-full px-3 text-white overflow-hidden">
       <h3 className="text-xl font-bold text-center pb-5">Today Top's Chart</h3>
       <div className="flex justify-between items-center text-gray-300 border-b pb-2">
         <span className="w-10">#</span>

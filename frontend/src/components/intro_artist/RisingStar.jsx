@@ -46,7 +46,7 @@ const RisingStar = () => {
     },
   ];
   return (
-    <div className="flex flex-col text-white items-center w-full overflow-hidden">
+    <div className="flex flex-col text-white items-center w-full mb-20 overflow-hidden">
       <h2 className="text-4xl font-bold">Rising Star</h2>
       <table className="text-white w-[70%] my-10">
         <thead>

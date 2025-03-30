@@ -22,6 +22,39 @@ const IntroArtist = () => {
     },
   ];
 
+  const rankingData = [
+    {
+      rank: "1",
+      artist: "Raisa",
+      genre: "R&B Soul",
+      image: assets.reputation,
+    },
+    {
+      rank: "2",
+      artist: "Tulus",
+      genre: "Rock",
+      image: assets.aespa,
+    },
+    {
+      rank: "3",
+      artist: "Hivi",
+      genre: "Pop",
+      image: assets.pink_venom,
+    },
+    {
+      rank: "4",
+      artist: "Lyodra",
+      genre: "Pop",
+      image: assets.harry_house,
+    },
+    {
+      rank: "5",
+      artist: "RAN",
+      genre: "R&B Funk",
+      image: assets.pink_venom,
+    },
+  ];
+
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const handleNext = () => {
@@ -61,7 +94,7 @@ const IntroArtist = () => {
         />
       </div>
       <RisingStar />
-      <TopArtist />
+      <TopArtist rankingData={rankingData} />
       <Download />
     </div>
   );

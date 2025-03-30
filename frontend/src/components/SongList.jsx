@@ -1,13 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   IoArrowForwardOutline,
   IoArrowBackOutline,
   IoHeartOutline,
+  IoHeartSharp,
 } from "react-icons/io5";
+import { PlayerContext } from "../global/PlayerContext";
+import { updateLikeCount } from "../services/songServices";
 
 const SongList = ({ title, songs }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(1);
+  const { playWithId } = useContext(PlayerContext);
+  const [likes, setLikes] = useState({});
+  const [likedStatus, setLikedStatus] = useState({});
 
   useEffect(() => {
     const updateCardsToShow = () => {
@@ -17,6 +23,17 @@ const SongList = ({ title, songs }) => {
     window.addEventListener("resize", updateCardsToShow);
     return () => window.removeEventListener("resize", updateCardsToShow);
   }, []);
+
+  useEffect(() => {
+    const initialLikes = {};
+    const initialLikedStatus = {};
+    songs.forEach((song) => {
+      initialLikes[song._id] = song.likes;
+      initialLikedStatus[song._id] = false;
+    });
+    setLikes(initialLikes);
+    setLikedStatus(initialLikedStatus);
+  }, [songs]);
 
   const nextSlide = () => {
     setCurrentIndex(() =>
@@ -28,6 +45,24 @@ const SongList = ({ title, songs }) => {
     setCurrentIndex((prevIndex) =>
       prevIndex - 1 < 0 ? songs.length - 1 : prevIndex - 1
     );
+  };
+
+  const handleLike = async (songID) => {
+    console.log(`Like button clicked for song ID: ${songID}`);
+    try {
+      const isLiked = likedStatus[songID];
+      await updateLikeCount(songID);
+      setLikes((prevLikes) => ({
+        ...prevLikes,
+        [songID]: isLiked ? prevLikes[songID] - 1 : prevLikes[songID] + 1,
+      }));
+      setLikedStatus((prevStatus) => ({
+        ...prevStatus,
+        [songID]: !isLiked,
+      }));
+    } catch (error) {
+      console.error("Error liking the song:", error);
+    }
   };
 
   return (
@@ -63,6 +98,7 @@ const SongList = ({ title, songs }) => {
           {songs.map((song, index) => (
             <div
               key={index}
+              onClick={() => playWithId(index, songs)}
               className="flex flex-col w-[calc(100% / 4)] p-3 items-center bg-transparent rounded-lg cursor-pointer hover:bg-slate-800"
             >
               <img
@@ -74,12 +110,24 @@ const SongList = ({ title, songs }) => {
                 <div className="flex flex-col pt-2">
                   <p className="text-sm font-bold">{song.title}</p>
                   <p className="text-xs">
-                    {song.artistID?.name || "Unknown Artist"}
+                    {song.name || "Unknown Artist"}
                   </p>
                 </div>
                 <div className="flex items-center space-x-1">
-                  <IoHeartOutline className="w-5 h-5" />
-                  <span className="text-xs">{song.likes}</span>
+                  <button
+                    className="cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike(song._id);
+                    }}
+                  >
+                    {likes[song._id] > song.likes ? (
+                      <IoHeartSharp className="text-red-500 w-5 h-5" />
+                    ) : (
+                      <IoHeartOutline className="w-5 h-5" />
+                    )}
+                  </button>
+                  <span className="text-xs">{likes[song._id]}</span>
                 </div>
               </div>
             </div>
