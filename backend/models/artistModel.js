@@ -9,6 +9,7 @@ const songSchema = new mongoose.Schema(
     genre: {
       type: String,
       required: true,
+      lowercase: true,
     },
     imageUrl: {
       type: String,

@@ -6,9 +6,15 @@ import {
   IoHeartSharp,
 } from "react-icons/io5";
 import { PlayerContext } from "../global/PlayerContext";
-import { updateLikeCount } from "../services/songServices";
+import {
+  updateLikeCount,
+  addToFavorites,
+  getFavoriteSongs,
+} from "../services/songServices";
+import { AppContext } from "../global/AppContext";
 
 const SongList = ({ title, songs }) => {
+  const { userId } = useContext(AppContext);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [cardsToShow, setCardsToShow] = useState(1);
   const { playWithId } = useContext(PlayerContext);
@@ -25,15 +31,33 @@ const SongList = ({ title, songs }) => {
   }, []);
 
   useEffect(() => {
-    const initialLikes = {};
-    const initialLikedStatus = {};
-    songs.forEach((song) => {
-      initialLikes[song._id] = song.likes;
-      initialLikedStatus[song._id] = false;
-    });
-    setLikes(initialLikes);
-    setLikedStatus(initialLikedStatus);
-  }, [songs]);
+    const fetchFavorites = async () => {
+      if (!userId || songs.length === 0) return;
+
+      try {
+        const favorites = await getFavoriteSongs(userId);
+        console.log("Fetched favorites:", favorites);
+        const favoriteSongIds = new Set(
+          favorites.songs.map((song) => song._id)
+        );
+
+        const initialLikes = {};
+        const initialLikedStatus = {};
+
+        songs.forEach((song) => {
+          initialLikes[song._id] = song.likes;
+          initialLikedStatus[song._id] = favoriteSongIds.has(song._id);
+        });
+
+        setLikes(initialLikes);
+        setLikedStatus(initialLikedStatus);
+      } catch (error) {
+        console.error("Failed to fetch favorite songs:", error);
+      }
+    };
+
+    fetchFavorites();
+  }, [songs, userId]);
 
   const nextSlide = () => {
     setCurrentIndex(() =>
@@ -52,6 +76,13 @@ const SongList = ({ title, songs }) => {
     try {
       const isLiked = likedStatus[songID];
       await updateLikeCount(songID);
+
+      if (!isLiked && userId) {
+        await addToFavorites(userId, songID);
+      } else if (isLiked && userId) {
+        await removeFromFavorites(userId, songID);
+      }
+
       setLikes((prevLikes) => ({
         ...prevLikes,
         [songID]: isLiked ? prevLikes[songID] - 1 : prevLikes[songID] + 1,
@@ -109,9 +140,7 @@ const SongList = ({ title, songs }) => {
               <div className="flex flex-row w-full justify-between">
                 <div className="flex flex-col pt-2">
                   <p className="text-sm font-bold">{song.title}</p>
-                  <p className="text-xs">
-                    {song.name || "Unknown Artist"}
-                  </p>
+                  <p className="text-xs">{song.name || "Unknown Artist"}</p>
                 </div>
                 <div className="flex items-center space-x-1">
                   <button
@@ -121,7 +150,7 @@ const SongList = ({ title, songs }) => {
                       handleLike(song._id);
                     }}
                   >
-                    {likes[song._id] > song.likes ? (
+                    {likedStatus[song._id] ? (
                       <IoHeartSharp className="text-red-500 w-5 h-5" />
                     ) : (
                       <IoHeartOutline className="w-5 h-5" />

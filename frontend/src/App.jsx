@@ -34,6 +34,7 @@ import Player from "./components/Player";
 import { PlayerContext } from "./global/PlayerContext";
 import AdminSideBar from "./components/Admin/Dashboard/AdminSideBar";
 import SearchScreen from "./pages/SearchScreen";
+import AlbumView from "./components/Album/AlbumView";
 
 const App = () => {
   const { audioRef, track } = useContext(PlayerContext);
@@ -58,7 +59,9 @@ const App = () => {
     "/album",
     "/artist",
     "/sound",
-    "/search"
+    "/search",
+    "/view-album/:albumId",
+    "/favorite",
   ];
   const isAdminRoute = ["/admin/dashboard", "/admin/add-artist"];
   return (
@@ -85,7 +88,7 @@ const App = () => {
             )}
           </div>
         )}
-        <div className="flex flex-col">
+        <div className="flex-1 flex flex-col">
           {pagesWithSearchHeaderandPlayer.includes(location.pathname) && (
             <SearchHeader />
           )}
@@ -100,6 +103,7 @@ const App = () => {
               <Route path="/reset-password/:id/" element={<ResetPassword />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/album" element={<Album />} />
+              <Route path="/view-album/:albumId" element={<AlbumView />} />
               <Route path="/artist" element={<Artist />} />
               <Route path="/favorite" element={<Favorite />} />
               <Route path="/sound" element={<Sound />} />

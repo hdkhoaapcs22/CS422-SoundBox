@@ -20,5 +20,7 @@ const searchHistorySchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-export default mongoose.models.searchHistory ||
-  mongoose.model("searchHistory", searchHistorySchema);
+const searchHistoryModel = mongoose.models.searchHistory ||
+mongoose.model("searchHistory", searchHistorySchema);
+
+export default searchHistoryModel;

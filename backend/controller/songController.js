@@ -1,5 +1,7 @@
 import { Song } from "../models/artistModel.js";
 import listeningHistoryModel from "../models/listeningHistoryModel.js";
+import songPlayModel from "../models/songPlayModel.js";
+import favoriteSongModel from "../models/favouriteSongModel.js";
 
 export const getNewReleases = async (limit = 20) => {
   try {
@@ -97,6 +99,7 @@ export const searchSongs = async (req, res) => {
 
   if (!query) {
     return res.status(400).json({
+      success: false,
       message: "No search query provided",
     });
   }
@@ -108,6 +111,7 @@ export const searchSongs = async (req, res) => {
 
     if (!songs.length) {
       return res.status(404).json({
+        success: false,
         message: "No songs found matching the search query",
       });
     }
@@ -116,6 +120,183 @@ export const searchSongs = async (req, res) => {
   } catch (error) {
     res.status(500).json({
       message: "Failed to search songs",
+      error: error.message,
+    });
+  }
+};
+
+export const getSongByGenre = async (req, res) => {
+  const { genre } = req.params;
+  try {
+    const songs = await Song.find({ genre: genre });
+
+    if (!songs.length) {
+      return res.status(404).json({
+        success: false,
+        message: "No songs found for this genre",
+      });
+    }
+
+    res.status(200).json(songs);
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to get songs by genre",
+      error: error.message,
+    });
+  }
+};
+
+let playCountCache = {};
+
+export const addPlayCount = (req, res) => {
+  const { songID } = req.params;
+  if (!songID) return res.status(400).json({ message: "Song ID is required" });
+
+  const today = new Date().toISOString().split("T")[0];
+  const key = `${songID}_${today}`;
+  console.log("Play count key:", key);
+  if (!playCountCache[key]) {
+    playCountCache[key] = 0;
+  }
+
+  playCountCache[key] += 1;
+  console.log(
+    "Play count cache updated for key:",
+    key,
+    "New count:",
+    playCountCache[key]
+  );
+  res
+    .status(200)
+    .json({ success: true, message: "Play count updated in cache" });
+};
+
+// Function to flush the cache to database every 10 minutes
+const flushPlayCountsToDB = async () => {
+  const entries = Object.entries(playCountCache);
+
+  for (const [key, count] of entries) {
+    if (count > 0) {
+      const [songID, date] = key.split("_");
+
+      await songPlayModel.findOneAndUpdate(
+        { songID, date },
+        { $inc: { playCount: count } },
+        { upsert: true, new: true }
+      );
+    }
+  }
+
+  console.log("Play counts saved to database:", playCountCache);
+  playCountCache = {};
+};
+
+setInterval(flushPlayCountsToDB, 1 * 60 * 1000);
+
+export const addSongToFavorites = async (req, res) => {
+  try {
+    const { userId, songId } = req.body;
+
+    if (!userId || !songId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing userId or songId",
+      });
+    }
+
+    const updatedFavorites = await favoriteSongModel.findOneAndUpdate(
+      { userID: userId },
+      { $addToSet: { songs: songId } }, // prevent duplicates
+      { upsert: true, new: true }
+    );
+
+    res.status(200).json({
+      success: true,
+      message: "Song added to favorites",
+      data: updatedFavorites,
+    });
+  } catch (error) {
+    console.error("Error adding song to favorites:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export const getFavoriteSongs = async (req, res) => {
+  try {
+    const { userId } = req.query;
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing userId",
+      });
+    }
+
+    const fav = await favoriteSongModel
+      .findOne({ userID: userId })
+      .populate("songs");
+
+    if (!fav || fav.songs.length === 0) {
+      return res.status(404).json({
+        success: false,
+        message: "No favorite songs found for this user",
+        songs: [],
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      songs: fav.songs,
+    });
+  } catch (error) {
+    console.error("Error fetching favorite songs:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
+      error: error.message,
+    });
+  }
+};
+
+export const removeSongFromFavorites = async (req, res) => {
+  try {
+    const { userId, songId } = req.body;
+
+    if (!userId || !songId) {
+      return res.status(400).json({
+        success: false,
+        message: "Missing userId or songId",
+      });
+    }
+
+    const updatedFavorites = await favoriteSongModel.findOneAndUpdate(
+      { userID: userId },
+      { $pull: { songs: songId } },
+      { new: true }
+    );
+
+    if (!updatedFavorites) {
+      return res.status(404).json({
+        success: false,
+        message: "Favorite list not found for this user",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "Song removed from favorites",
+      data: updatedFavorites,
+    });
+  } catch (error) {
+    console.error("Error removing song from favorites:", error);
+    res.status(500).json({
+      success: false,
+      message: "Server Error",
       error: error.message,
     });
   }

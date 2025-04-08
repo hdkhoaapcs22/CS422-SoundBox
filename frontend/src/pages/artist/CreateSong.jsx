@@ -12,7 +12,7 @@ const CreateSong = () => {
   const [audio, setAudio] = useState(null);
   const [audioPreview, setAudioPreview] = useState(null);
   const [songTitle, setSongTitle] = useState("");
-  const [genre, setGenre] = useState("Ballad");
+  const [genre, setGenre] = useState("ballad");
   const [collaborators, setCollaborators] = useState([]);
   const [conditionCheckedBox, setconditionCheckedBox] = useState(false);
   const [audioDuration, setAudioDuration] = useState(null);
@@ -46,7 +46,7 @@ const CreateSong = () => {
 
       if (response.data.success) {
         setSongTitle("");
-        setGenre("Ballad");
+        setGenre("ballad");
         setCollaborators([]);
         setImage(null);
         setAudio(null);

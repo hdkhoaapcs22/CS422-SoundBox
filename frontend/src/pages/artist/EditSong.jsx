@@ -14,7 +14,7 @@ const EditSong = () => {
 
     const [originalSongData, setOriginalSongData] = useState({});
     const [songTitle, setSongTitle] = useState("");
-    const [genre, setGenre] = useState("Ballad");
+    const [genre, setGenre] = useState("ballad");
     const [songImage, setSongImage] = useState(null);
     const [audio, setAudio] = useState(null);
     const [audioPreview, setAudioPreview] = useState(null);

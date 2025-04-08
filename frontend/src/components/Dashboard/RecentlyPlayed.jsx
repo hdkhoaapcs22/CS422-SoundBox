@@ -11,7 +11,6 @@ const RecentlyPlayed = () => {
   const { userId } = useContext(AppContext);
   useEffect(() => {
     const fetchRecentlyPlayed = async () => {
-      console.log("User ID:", userId);
       try {
         const response = await axios.get(
           import.meta.env.VITE_BACKEND_URL +

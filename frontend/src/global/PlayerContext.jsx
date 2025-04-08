@@ -19,6 +19,8 @@ const PlayerContextProvider = (props) => {
     currentTime: 0,
     isPlaying: false,
   });
+  const [queue, setQueue] = useState([]);
+  const [currentIndex, setCurrentIndex] = useState(0);
 
   const [playStatus, setPlayStatus] = useState(false);
   const [time, setTime] = useState({
@@ -62,15 +64,27 @@ const PlayerContextProvider = (props) => {
       });
     };
 
+    const handleEnded = () => {
+      if (currentIndex < queue.length - 1) {
+        const nextIndex = currentIndex + 1;
+        setCurrentIndex(nextIndex);
+        playWithId(nextIndex, queue);
+      } else {
+        setPlayStatus(false); // Stop when no more songs
+      }
+    };
+
     // Set the ontimeupdate function
     audioRef.current.ontimeupdate = updateTime;
+    audioRef.current.onended = handleEnded;
 
     return () => {
       if (audioRef.current) {
-        audioRef.current.ontimeupdate = null; // Clean up the event listener
+        audioRef.current.ontimeupdate = null;
+        audioRef.current.onended = null;
       }
     };
-  }, []);
+  }, [audioRef, queue, currentIndex]);
 
   const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
@@ -105,6 +119,13 @@ const PlayerContextProvider = (props) => {
       audioRef.current.duration;
   };
 
+  const playQueue = (songs) => {
+    if (!songs || songs.length === 0) return;
+    setQueue(songs);
+    setCurrentIndex(0);
+    playWithId(0, songs);
+  };
+
   const playWithId = async (id, songsData) => {
     if (!songsData || !songsData[id]) return;
     const selectedTrack = songsData[id];
@@ -122,8 +143,26 @@ const PlayerContextProvider = (props) => {
         throw new Error("Failed to save listening history");
       }
     } catch (error) {
-      console.error("Error saving listening history:", error);
+      console.log("Error saving listening history:", error);
     }
+
+    try {
+      const response1 = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/songs/play-count/${
+          selectedTrack._id
+        }`,
+        {
+          songID: selectedTrack._id,
+        }
+      );
+      console.log("API call success, response:", response1);
+      if (response1.status !== 200) {
+        throw new Error("Failed to update play count");
+      }
+    } catch (error) {
+      console.log("Error updating play count:", error);
+    }
+    
     await audioRef.current.play();
     setPlayStatus(true);
   };
@@ -146,6 +185,11 @@ const PlayerContextProvider = (props) => {
     toggleMute,
     seekSong,
     playWithId,
+    queue,
+    setQueue,
+    currentIndex,
+    setCurrentIndex,
+    playQueue,
   };
 
   return (

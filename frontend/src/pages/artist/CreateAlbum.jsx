@@ -6,7 +6,6 @@ import { AppContext } from "../../global/AppContext";
 import assets from "../../assets/assets";
 import { MdDelete } from "react-icons/md";
 
-
 const CreateAlbum = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { userId } = useContext(AppContext);
@@ -19,7 +18,7 @@ const CreateAlbum = () => {
       title: "",
       image: null,
       audio: null,
-      genre: "Ballad",
+      genre: "ballad",
       audioPreview: null,
       duration: 0,
       collaborators: [],
@@ -29,7 +28,7 @@ const CreateAlbum = () => {
       title: "",
       image: null,
       audio: null,
-      genre: "Ballad",
+      genre: "ballad",
       audioPreview: null,
       duration: 0,
       collaborators: [],
