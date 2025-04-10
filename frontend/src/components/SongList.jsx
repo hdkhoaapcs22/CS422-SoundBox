@@ -36,7 +36,6 @@ const SongList = ({ title, songs }) => {
 
       try {
         const favorites = await getFavoriteSongs(userId);
-        console.log("Fetched favorites:", favorites);
         const favoriteSongIds = new Set(
           favorites.songs.map((song) => song._id)
         );

@@ -35,6 +35,7 @@ import { PlayerContext } from "./global/PlayerContext";
 import AdminSideBar from "./components/Admin/Dashboard/AdminSideBar";
 import SearchScreen from "./pages/SearchScreen";
 import AlbumView from "./components/Album/AlbumView";
+import ArtistView from "./components/Artist/ArtistView";
 
 const App = () => {
   const { audioRef, track } = useContext(PlayerContext);
@@ -60,7 +61,6 @@ const App = () => {
     "/artist",
     "/sound",
     "/search",
-    "/view-album/:albumId",
     "/favorite",
   ];
   const isAdminRoute = ["/admin/dashboard", "/admin/add-artist"];
@@ -103,8 +103,8 @@ const App = () => {
               <Route path="/reset-password/:id/" element={<ResetPassword />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/album" element={<Album />} />
-              <Route path="/view-album/:albumId" element={<AlbumView />} />
               <Route path="/artist" element={<Artist />} />
+              <Route path="/artist/:artistId" element={<ArtistView />} />
               <Route path="/favorite" element={<Favorite />} />
               <Route path="/sound" element={<Sound />} />
               <Route path="/create-album" element={<CreateAlbum />} />

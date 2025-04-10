@@ -10,6 +10,12 @@ export const addSongListeningHistory = async (req, res) => {
     });
 
     await newHistory.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Listening history saved successfully.",
+      data: newHistory,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -23,7 +29,7 @@ export const getListeningHistory = async (req, res) => {
   const { listenerID } = req.params;
 
   try {
-    const history = await listeningHistorySchema.find({ listenerID }).populate({
+    const history = await listeningHistoryModel.find({ listenerID }).populate({
       path: "songID",
       select: "title name imageUrl",
     });

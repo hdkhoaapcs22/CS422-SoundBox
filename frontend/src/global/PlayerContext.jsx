@@ -1,6 +1,11 @@
 import { createContext, useEffect, useRef, useState, useContext } from "react";
 import { AppContext } from "../global/AppContext";
 import axios from "axios";
+import {
+  addToListeningHistory,
+  incrementPlayCount,
+} from "../services/songServices";
+
 export const PlayerContext = createContext();
 
 const PlayerContextProvider = (props) => {
@@ -84,7 +89,7 @@ const PlayerContextProvider = (props) => {
         audioRef.current.onended = null;
       }
     };
-  }, [audioRef, queue, currentIndex]);
+  }, [track, currentIndex, queue]);
 
   const [volume, setVolume] = useState(50);
   const [isMuted, setIsMuted] = useState(false);
@@ -127,27 +132,26 @@ const PlayerContextProvider = (props) => {
   };
 
   const playWithId = async (id, songsData) => {
-    if (!songsData || !songsData[id]) return;
-    const selectedTrack = songsData[id];
-    setTrack(selectedTrack);
     try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BACKEND_URL}/api/listeninghistory/add`,
-        {
-          listenerID: userId,
-          songID: selectedTrack._id,
-        }
-      );
+      if (!songsData || !songsData[id]) return;
 
-      if (response.status !== 201) {
-        throw new Error("Failed to save listening history");
+      const selectedTrack = songsData[id];
+      setTrack(selectedTrack);
+      if (audioRef.current) {
+        audioRef.current.src = selectedTrack.audioUrl;
+
+        // Wait for metadata to load before playing
+        await new Promise((resolve) => {
+          audioRef.current.onloadedmetadata = () => {
+            resolve();
+          };
+        });
+
+        await audioRef.current.play();
+        setPlayStatus(true);
       }
-    } catch (error) {
-      console.log("Error saving listening history:", error);
-    }
 
-    try {
-      const response1 = await axios.post(
+      const playCountResponse = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/songs/play-count/${
           selectedTrack._id
         }`,
@@ -155,16 +159,29 @@ const PlayerContextProvider = (props) => {
           songID: selectedTrack._id,
         }
       );
-      console.log("API call success, response:", response1);
-      if (response1.status !== 200) {
-        throw new Error("Failed to update play count");
+
+      if (playCountResponse.status !== 200) {
+        console.error("❌ Failed to update play count");
+      } else {
+        console.log("✅ Play count updated");
       }
-    } catch (error) {
-      console.log("Error updating play count:", error);
+
+      const historyResponse = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/listeninghistory/add`,
+        {
+          listenerID: userId,
+          songID: selectedTrack._id,
+        }
+      );
+
+      if (historyResponse.status !== 201) {
+        console.error("❌ Failed to save listening history");
+      } else {
+        console.log("✅ Listening history saved");
+      }
+    } catch (err) {
+      console.error("🔥 Global error in playWithId:", err);
     }
-    
-    await audioRef.current.play();
-    setPlayStatus(true);
   };
 
   const contextValue = {

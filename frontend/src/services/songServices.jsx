@@ -5,8 +5,6 @@ export const getRecentlyPlayed = async (listenerID, limit = 10) => {
     const response = await axios.get(
       `${import.meta.env.VITE_BACKEND_URL}/api/recently-played/${listenerID}`
     );
-
-    console.log("Fetched recently played songs:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching recently played songs:", error);
@@ -62,8 +60,52 @@ export const getFavoriteSongs = async (userId) => {
     );
     return response.data;
   } catch (error) {
-    console.log("Error fetching favorite songs:", error);
     console.error("Error fetching recently played songs:", error);
+    return [];
+  }
+};
+
+export const addToListeningHistory = async (listenerID, songID) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/listeninghistory/add`,
+      {
+        listenerID,
+        songID,
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error saving listening history:", error);
+  }
+};
+
+export const incrementPlayCount = async (songID) => {
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_BACKEND_URL}/api/songs/play-count/${songID}`,
+      {
+        songID,
+      }
+    );
+    return response;
+  } catch (error) {
+    console.error("Error updating play count:", error);
+  }
+};
+
+export const getSongsByArtist = async (artistID) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/artist/${artistID}`,
+      {
+        params: { artistID },
+      }
+    );
+    console.log("Response from getSongsByArtist:", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching songs:", error);
     return [];
   }
 };

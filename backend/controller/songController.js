@@ -156,11 +156,13 @@ export const addPlayCount = (req, res) => {
   const today = new Date().toISOString().split("T")[0];
   const key = `${songID}_${today}`;
   console.log("Play count key:", key);
+
   if (!playCountCache[key]) {
     playCountCache[key] = 0;
   }
 
   playCountCache[key] += 1;
+  console.log("Play count cache: ", playCountCache);
   console.log(
     "Play count cache updated for key:",
     key,
@@ -178,7 +180,12 @@ const flushPlayCountsToDB = async () => {
 
   for (const [key, count] of entries) {
     if (count > 0) {
-      const [songID, date] = key.split("_");
+      // const [songID, date] = key.split("_");
+      const underscoreIndex = key.indexOf("_");
+      const songID = key.slice(0, underscoreIndex);
+      const dateStr = key.slice(underscoreIndex + 1);
+      const date = new Date(dateStr);
+      date.setHours(0, 0, 0, 0);
 
       await songPlayModel.findOneAndUpdate(
         { songID, date },
