@@ -180,10 +180,12 @@ const flushPlayCountsToDB = async () => {
 
   for (const [key, count] of entries) {
     if (count > 0) {
-      const underscoreIndex = key.indexOf("_");
-      const songID = key.slice(0, underscoreIndex);
-      const dateStr = key.slice(underscoreIndex + 1);
+      const [songID, dateStr] = key.split("_");
       const date = new Date(dateStr);
+      // const underscoreIndex = key.indexOf("_");
+      // const songID = key.slice(0, underscoreIndex);
+      // const dateStr = key.slice(underscoreIndex + 1);
+      // const date = new Date(dateStr);
       date.setHours(0, 0, 0, 0);
 
       await songPlayModel.findOneAndUpdate(
@@ -359,3 +361,69 @@ export const getTopSongsInWeek = async (req, res) => {
     });
   }
 };
+
+export const getMonthlyTopOneHit = async (req, res) => {
+  try {
+    const oneMonthAgo = new Date();
+    oneMonthAgo.setMonth(oneMonthAgo.getMonth() - 1);
+
+    const result = await songPlayModel.aggregate([
+      {
+        $match: {
+          date: { $gte: oneMonthAgo },
+        },
+      },
+      {
+        $group: {
+          _id: "$songID",
+          totalPlays: { $sum: "$playCount" },
+        },
+      },
+      { $sort: { totalPlays: -1 } },
+      { $limit: 5 },
+      {
+        $lookup: {
+          from: "songs",
+          localField: "_id",
+          foreignField: "_id",
+          as: "song",
+        },
+      },
+      { $unwind: "$song" },
+      {
+        $addFields: {
+          "song.totalPlays": "$totalPlays",
+        },
+      },
+      {
+        $replaceRoot: { newRoot: "$song" },
+      },
+      {
+        $lookup: {
+          from: "artists",
+          localField: "artistID",
+          foreignField: "_id",
+          as: "artist",
+        },
+      },
+      { $unwind: "$artist" }, // Flatten artist array
+      {
+        $project: {
+          likes: 1,
+          totalPlays: 1,
+          title: 1,
+          "artist.name": 1,
+          "artist.avatarUrl": 1,
+        }
+      }
+    ]);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    console.error("Error fetching monthly top one-hit artist:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get monthly top one-hit artist",
+      error: err.message,
+    });
+  }
+}
