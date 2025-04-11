@@ -17,7 +17,11 @@ const Favorite = () => {
 
       try {
         const favSongs = await getFavoriteSongs(userId);
-        console.log("Favorite songs:", favSongs);
+        if (!favSongs || !favSongs.songs) {
+          console.log("No favorite songs found or invalid response:", favSongs);
+          return;
+        }
+        console.log("Favorite songs:", favSongs.songs);
         setFavorites(favSongs.songs);
       } catch (error) {
         console.error("Failed to load favorite songs:", error);

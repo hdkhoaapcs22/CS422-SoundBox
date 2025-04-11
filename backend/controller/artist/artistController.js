@@ -1,6 +1,5 @@
 import songPlayModel from "../../models/songPlayModel.js";
 import { Song } from "../../models/artistModel.js";
-import mongoose from "mongoose";
 
 export const getTop5ArtistsByPlayCount = async (req, res) => {
   try {

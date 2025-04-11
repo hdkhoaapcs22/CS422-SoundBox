@@ -10,6 +10,7 @@ import {
   addSongToFavorites,
   getFavoriteSongs,
   removeSongFromFavorites,
+  getTopSongsInWeek,
 } from "../../controller/songController.js";
 
 const songRouter = express.Router();
@@ -25,4 +26,5 @@ songRouter.post("/play-count/:songID", addPlayCount);
 songRouter.post("/add-to-favorites/:songID", addSongToFavorites);
 songRouter.get("/favorites", getFavoriteSongs);
 songRouter.post("/remove-from-favorites/:songID", removeSongFromFavorites);
+songRouter.get("/top-songs", getTopSongsInWeek);
 export default songRouter;

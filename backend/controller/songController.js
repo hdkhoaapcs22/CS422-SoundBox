@@ -180,7 +180,6 @@ const flushPlayCountsToDB = async () => {
 
   for (const [key, count] of entries) {
     if (count > 0) {
-      // const [songID, date] = key.split("_");
       const underscoreIndex = key.indexOf("_");
       const songID = key.slice(0, underscoreIndex);
       const dateStr = key.slice(underscoreIndex + 1);
@@ -305,6 +304,58 @@ export const removeSongFromFavorites = async (req, res) => {
       success: false,
       message: "Server Error",
       error: error.message,
+    });
+  }
+};
+
+export const getTopSongsInWeek = async (req, res) => {
+  try {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    const result = await songPlayModel.aggregate([
+      {
+        $match: {
+          date: { $gte: oneWeekAgo },
+        },
+      },
+      // Group by songID and count play count
+      {
+        $group: {
+          _id: "$songID",
+          totalPlays: { $sum: "$playCount" },
+        },
+      },
+      // Sort by play count
+      { $sort: { totalPlays: -1 } },
+      // Limit to top 5
+      { $limit: 5 },
+      // Join with songs collection
+      {
+        $lookup: {
+          from: "songs",
+          localField: "_id",
+          foreignField: "_id",
+          as: "song",
+        },
+      },
+      { $unwind: "$song" },
+      {
+        $addFields: {
+          "song.totalPlays": "$totalPlays",
+        },
+      },
+      {
+        $replaceRoot: { newRoot: "$song" },
+      },
+    ]);
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    console.error("Error fetching top weekly songs:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get top weekly songs",
+      error: err.message,
     });
   }
 };

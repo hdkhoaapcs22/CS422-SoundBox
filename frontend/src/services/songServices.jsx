@@ -102,10 +102,21 @@ export const getSongsByArtist = async (artistID) => {
         params: { artistID },
       }
     );
-    console.log("Response from getSongsByArtist:", response.data);
     return response.data;
   } catch (error) {
     console.error("Error fetching songs:", error);
+    return [];
+  }
+};
+
+export const getTopSongsInWeek = async () => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/songs/top-songs`
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error get top songs:", error);
     return [];
   }
 };
