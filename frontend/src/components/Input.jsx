@@ -12,6 +12,7 @@ const Input = ({
     callbackHiddenPassword,
     isHiddenPassword,
     isDisabled = false,
+    required = false,
 }) => {
     return (
         <div className="relative flex flex-col">

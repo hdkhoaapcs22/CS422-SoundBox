@@ -187,4 +187,35 @@ const updateSong = async (req, res) => {
   }
 };
 
-export { createSong, createAlbum, updateSong };
+const deleteSong = async (req, res) => {
+  const {songId, artistId} = req.params;
+  try{
+      const artist = await artistModel.findById(artistId);
+      if (!artist) {
+        return res.json({ success: false, message: "Artist not found" });
+      }
+      await Song.deleteOne({__id: songId, artistID: artistId });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
+ 
+}
+
+const deleteAlbum = async (req, res) => {
+  
+    const { albumId, artistId } = req.params;
+    try {
+      const artist = await artistModel.findById(artistId);
+      if (!artist) {
+        return res.json({ success: false, message: "Artist not found" });
+      }
+      console.log("album, artist Id: " ,albumId, artistId);
+      await Album.deleteOne({ _id: albumId, artistID: artistId });
+    } catch (error) {
+      console.error(error);
+      res.json({ success: false, message: error.message });
+    }
+}
+
+export { createSong, createAlbum, updateSong, deleteSong, deleteAlbum };

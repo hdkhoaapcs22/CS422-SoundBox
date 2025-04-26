@@ -36,26 +36,24 @@ const CreateAlbum = () => {
     ]);
 
     const addCollaborator = (songId) => {
-        0;
-        for (let i = 0; i < songs.length; ++i) {
-            if (songs[i].id === songId) {
-                if (songs[i].collaborators.length === 0) {
-                    toast.error("Please fill the collaborator field");
-                    return;
-                } else {
-                    for (let j = 0; j < songs[i].collaborators.length; ++j) {
-                        if (songs[i].collaborators[j].trim() === "") {
+        setSongs((prevSongs) =>
+            prevSongs.map((song) => {
+                if (song.id === songId) {
+                    for (let i = 0; i < song.collaborators.length; ++i) {
+                        if (song.collaborators[i].trim() === "") {
                             toast.error("Please fill the collaborator field");
-                            return;
+                            return song; // Return unchanged if error
                         }
                     }
+                    // Add empty string to collaborators
+                    return {
+                        ...song,
+                        collaborators: [...song.collaborators, ""],
+                    };
                 }
-                setSongs({
-                    ...songs,
-                    collaborators: [...songs.collaborators, ""],
-                });
-            }
-        }
+                return song; // Other songs unchanged
+            })
+        );
     };
 
     const handleCollaboratorChange = (songId, index, value) => {
@@ -246,6 +244,7 @@ const CreateAlbum = () => {
                         placeholder="Enter album title"
                         value={albumTitle}
                         onChangeValue={setAlbumTitle}
+                        required={true}
                     />
                 </div>
 
@@ -270,7 +269,7 @@ const CreateAlbum = () => {
                         <div className="flex gap-20 mb-4">
                             <div>
                                 <div className="font-semibold mb-2">
-                                    Upload Song Image
+                                    Song Image
                                 </div>
                                 <label htmlFor={`uploadSongImage-${song.id}`}>
                                     <img
