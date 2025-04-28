@@ -33,6 +33,8 @@ import pop from "./pop.png";
 import rock from "./rock.png";
 import edm from "./edm.png";
 import hiphop from "./hiphop.png";
+import jazz from "./jazz.png";
+import ballad from "./ballad.png";
 import sound_banner_1 from "./sound_banner_1.jpg";
 import sound_banner_2 from "./sound_banner_2.jpg";
 
@@ -72,6 +74,8 @@ const assets = {
   rock,
   edm,
   hiphop,
+  jazz,
+  ballad,
   sound_banner_1,
   sound_banner_2,
 };
