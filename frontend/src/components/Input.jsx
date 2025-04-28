@@ -30,7 +30,7 @@ const Input = ({
                 value={value}
                 onChange={(e) => onChangeValue(e.target.value)}
                 disabled = {isDisabled}
-                required
+                required= {required}
             />
             {isPassword && (
                 <span className="absolute right-3 top-10  text-gray-400 cursor-pointer">

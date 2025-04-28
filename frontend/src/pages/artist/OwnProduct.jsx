@@ -123,7 +123,8 @@ const OwnProduct = () => {
                 >
                     <span>{songs.length + index + 1}</span>
                     <Link
-                        to="/album/:id"
+                        to={`/album/${item._id}`}
+                        state={{ album: item }}
                         className="hover:cursor-pointer hover:underline hover:text-[#B6FF52]"
                     >
                         <div className="flex items-center gap-2">

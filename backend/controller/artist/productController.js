@@ -9,7 +9,7 @@ const ownProduct = async (req, res) => {
         }
 
         const albums = await Album.find({ artistID: artistId });
-        const songs = await Song.find({ artistID: artistId });
+        let songs = await Song.find({ artistID: artistId });
         const likesOfAlbum = await Promise.all(
             albums.map(async (album) => {
                 let tmp = 0;
@@ -19,9 +19,12 @@ const ownProduct = async (req, res) => {
                         tmp += song.likes;
                     }
                 }
-                return tmp; // return the total likes for this album
+                return tmp; 
             })
         );
+
+        songs = songs.filter(song => song.albumId === null);
+        console.log(songs);
 
         res.json({ success: true, songs, albums, likesOfAlbum });
 
