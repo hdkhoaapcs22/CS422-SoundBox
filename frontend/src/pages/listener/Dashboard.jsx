@@ -3,6 +3,7 @@ import RecentlyPlayed from "../../components/Dashboard/RecentlyPlayed";
 import TodayTopChart from "../../components/Dashboard/TodayTopChart";
 import BannerDashboard from "../../components/Dashboard/BannerDashboard";
 import NewRelease from "../../components/Dashboard/NewRelease";
+import UploadAudio from "../../components/UploadAudio";
 const Dashboard = () => {
   return (
     <div className="w-screen h-[88%] flex flex-row overflow-hidden">
