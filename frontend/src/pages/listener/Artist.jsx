@@ -7,10 +7,12 @@ const Artist = () => {
   const [rankingData, setRankingData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [selectedArtistId, setSelectedArtistId] = useState(null);
+  const [formattedData, setFormattedData] = useState([]);
 
   const handleBack = () => {
     setSelectedArtistId(null);
   };
+  
   useEffect(() => {
     const getTopArtists = async () => {
       const topArtists = await fetchTopArtists();
@@ -20,14 +22,15 @@ const Artist = () => {
         artist: item.artistInfo.name,
         image: item.artistInfo.avatarUrl,
       }));
-      setRankingData(formattedData);
+      setRankingData(topArtists);
+      setFormattedData(formattedData);
       setIsLoading(false);
     };
 
     getTopArtists();
   }, []);
 
-  const selectedArtist = rankingData.find(
+  const selectedArtist = formattedData.find(
     (a) => a.artistId === selectedArtistId
   );
 

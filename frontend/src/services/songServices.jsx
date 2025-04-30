@@ -120,3 +120,15 @@ export const getTopSongsInWeek = async () => {
     return [];
   }
 };
+
+export const getTopListenedSongOfUser = async (listenerId) => {
+  try {
+    const response = await axios.get(
+      `${import.meta.env.VITE_BACKEND_URL}/api/songs/most-listened-songs?listenerId=${listenerId}`,
+    );
+    return response.data.data;
+  } catch (error) {
+    console.error("Error get top songs:", error);
+    return [];
+  }
+};

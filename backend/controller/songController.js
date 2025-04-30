@@ -2,7 +2,7 @@ import { Song } from "../models/artistModel.js";
 import listeningHistoryModel from "../models/listeningHistoryModel.js";
 import songPlayModel from "../models/songPlayModel.js";
 import favoriteSongModel from "../models/favouriteSongModel.js";
-
+import mongoose from "mongoose";
 export const getNewReleases = async (limit = 20) => {
   try {
     return await Song.find().sort({ createdAt: -1 }).limit(limit);
@@ -155,20 +155,20 @@ export const addPlayCount = (req, res) => {
 
   const today = new Date().toISOString().split("T")[0];
   const key = `${songID}_${today}`;
-  console.log("Play count key:", key);
+  // console.log("Play count key:", key);
 
   if (!playCountCache[key]) {
     playCountCache[key] = 0;
   }
 
   playCountCache[key] += 1;
-  console.log("Play count cache: ", playCountCache);
-  console.log(
-    "Play count cache updated for key:",
-    key,
-    "New count:",
-    playCountCache[key]
-  );
+  // console.log("Play count cache: ", playCountCache);
+  // console.log(
+  //   "Play count cache updated for key:",
+  //   key,
+  //   "New count:",
+  //   playCountCache[key]
+  // );
   res
     .status(200)
     .json({ success: true, message: "Play count updated in cache" });
@@ -196,7 +196,7 @@ const flushPlayCountsToDB = async () => {
     }
   }
 
-  console.log("Play counts saved to database:", playCountCache);
+  // console.log("Play counts saved to database:", playCountCache);
   playCountCache = {};
 };
 
@@ -427,3 +427,54 @@ export const getMonthlyTopOneHit = async (req, res) => {
     });
   }
 }
+
+
+export const getTopListenedSongOfUser = async (req, res) => {
+  try {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the current month
+    const {listenerId} = req.query;
+    const result = await listeningHistoryModel.aggregate([
+      {
+        $match: {
+          playedAt: { $gte: startOfMonth }, 
+          listenerID: new mongoose.Types.ObjectId(listenerId),
+        },
+      },
+      {
+        $group: {
+          _id: "$songID",
+          totalPlays: { $sum: 1 },
+        },
+      },
+      { $sort: { totalPlays: -1 } },
+      { $limit: 10 },
+      {
+        $lookup: {
+          from: "songs",
+          localField: "_id",
+          foreignField: "_id",
+          as: "song",
+        },
+      },
+      { $unwind: "$song" },
+      {
+        $addFields: {
+          "song.totalPlays": "$totalPlays", // Add totalPlays to the song details
+        },
+      },
+      {
+        $replaceRoot: { newRoot: "$song" }, // Replace the root with the song data
+      },
+    ]);
+
+    res.status(200).json({ success: true, data: result });
+  } catch (err) {
+    console.error("Error fetching top song of the month:", err);
+    res.status(500).json({
+      success: false,
+      message: "Failed to get top song of the month",
+      error: err.message,
+    });
+  }
+};
