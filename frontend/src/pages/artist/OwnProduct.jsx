@@ -9,7 +9,7 @@ const OwnProduct = () => {
     const { userId } = useContext(AppContext);
     const [songs, setSongs] = useState([]);
     const [albums, setAlbums] = useState([]);
-    // Fetch data from the backend
+    const [likesOfAlbum, setLikesOfAlbum] = useState([]);
     const fetchData = async () => {
         try {
             const response = await axios.get(
@@ -17,17 +17,50 @@ const OwnProduct = () => {
                     "/api/artist/own-product/" +
                     userId
             );
-            // setData(response.data);
             if (response.data.success) {
-                console.log(response.data);
                 setSongs(response.data.songs);
-                setAlbums(response.data.album);
+                setAlbums(response.data.albums);
+                setLikesOfAlbum(response.data.likesOfAlbum);
             } else {
                 console.log(response.data.message);
                 toast.error(response.data.message);
             }
         } catch (error) {
             console.error("Error fetching music data:", error);
+        }
+    };
+
+    const handleRemove = async (id, type) => {
+        const path = type === "song" ? "delete-song" : "delete-album";
+        try {
+            if (type === "song") {
+                setSongs((prevSongs) =>
+                    prevSongs.filter((song) => song._id !== id)
+                );
+            } else {
+                setAlbums((prevAlbums) =>
+                    prevAlbums.filter((album) => album._id !== id)
+                );
+            }
+            console.log(id);
+            const response = await axios.delete(
+                import.meta.env.VITE_BACKEND_URL +
+                    "/api/artist/" +
+                    path +
+                    "/" +
+                    userId +
+                    "/" +
+                    id
+            );
+            if (response.data.success) {
+                toast.success(response.data.message);
+            } else {
+                console.log(response.data.message);
+                toast.error(response.data.message);
+            }
+        } catch (error) {
+            console.error("Error removing item:", error);
+            toast.error("Error removing item: " + error.message);
         }
     };
 
@@ -75,6 +108,7 @@ const OwnProduct = () => {
                         <button
                             type="button"
                             className="bg-red-500 p-2 rounded mt-2"
+                            onClick={() => handleRemove(item._id, "song")}
                         >
                             Remove
                         </button>
@@ -89,7 +123,8 @@ const OwnProduct = () => {
                 >
                     <span>{songs.length + index + 1}</span>
                     <Link
-                        to="/album/:id"
+                        to={`/album/${item._id}`}
+                        state={{ album: item }}
                         className="hover:cursor-pointer hover:underline hover:text-[#B6FF52]"
                     >
                         <div className="flex items-center gap-2">
@@ -105,18 +140,14 @@ const OwnProduct = () => {
                     <div></div>
                     <div className="flex items-center gap-1">
                         <MdFavoriteBorder />
-                        <span>
-                            {item.songs.reduce(
-                                (acc, curr) => acc + curr.likes,
-                                0
-                            )}
-                        </span>
+                        <span>{likesOfAlbum[index]}</span>
                     </div>
 
                     <div>
                         <button
                             type="button"
                             className="bg-red-500 text-white p-2 rounded mt-2"
+                            onClick={() => handleRemove(item._id, "album")}
                         >
                             Remove
                         </button>

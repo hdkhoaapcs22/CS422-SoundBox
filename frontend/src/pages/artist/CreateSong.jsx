@@ -50,6 +50,7 @@ const CreateSong = () => {
         setCollaborators([]);
         setImage(null);
         setAudio(null);
+        setAudioPreview(null);
         document.getElementById("artistUploadSingleSongImage").value = "";
         document.getElementById("artistUploadSingleSongAudio").value = "";
         toast.success("Song uploaded successfully!");

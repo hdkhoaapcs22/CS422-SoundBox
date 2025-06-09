@@ -91,6 +91,7 @@ const createAlbum = async (req, res) => {
   try {
     const { albumTitle, id } = req.body;
     const { title, genre, duration, collaborators } = req.body.songs;
+    console.log("colla: ", collaborators);
 
     const songAudios = req.files["songs[audio]"];
     const songImages = req.files["songs[image]"];
@@ -187,4 +188,87 @@ const updateSong = async (req, res) => {
   }
 };
 
-export { createSong, createAlbum, updateSong };
+const deleteSong = async (req, res) => {
+  const {songId, artistId} = req.params;
+  try{
+      const artist = await artistModel.findById(artistId);
+      if (!artist) {
+        return res.json({ success: false, message: "Artist not found" });
+      }
+      await Song.deleteOne({__id: songId, artistID: artistId });
+  } catch (error) {
+    console.error(error);
+    res.json({ success: false, message: error.message });
+  }
+ 
+}
+
+const deleteAlbum = async (req, res) => {
+  
+    const { albumId, artistId } = req.params;
+    try {
+      const artist = await artistModel.findById(artistId);
+      if (!artist) {
+        return res.json({ success: false, message: "Artist not found" });
+      }
+      console.log("album, artist Id: " ,albumId, artistId);
+      await Album.deleteOne({ _id: albumId, artistID: artistId });
+    } catch (error) {
+      console.error(error);
+      res.json({ success: false, message: error.message });
+    }
+}
+
+const updateAlbum = async (req, res) => {
+   try {
+    console.log("req.body: ", req.body);
+    console.log("req.files: ", req.files);
+
+    const {albumTitle, albumId} = req.body;
+    let albumImage;
+    if(req.body.albumImage){
+      albumImage= req.body.albumImage;
+    }
+    else{
+      const imageAlbumFieldName = "albumImage";
+      const imageAlbumFile = req.files.find(file => file.fieldname === imageAlbumFieldName);
+      albumImage = await uploadToCloudinary(imageAlbumFile);
+      console.log("albumImage: ", albumImage);
+    }
+    await Album.findByIdAndUpdate(albumId, {name: albumTitle, image: albumImage.secure_url});
+    
+    const songs = req.body.song;
+    for(let i = 0; i< songs.length; ++i){
+      let songImage, songAudio;
+      const {title, genre, duration} = songs[i];
+      if(songs[i].image){
+        songImage = songs[i].image;
+      }
+      else{
+        const imageSongFieldName = `song[${i}][image]`;
+        const imageFile = req.files.find(file => file.fieldname === imageSongFieldName);
+        songImage = await uploadToCloudinary(imageFile);
+        console.log("songImage: ", songImage);
+      }
+
+      if(songs[i].audio){
+        songAudio = songs[i].audio;
+      }
+      else{
+        const audioFieldName  = `song[${i}][audio]`;
+        const audioFile = req.files.find(file => file.fieldname === audioFieldName);
+        songAudio = await uploadToCloudinary(audioFile);
+        console.log("songAudio: ", songAudio);
+      }
+      let collaborators = songs[i].collaborators == [''] ? [] : songs[i].collaborators ;
+
+      await Song.findByIdAndUpdate(songs[i].id, {title, genre, duration, collaborators, imageUrl: typeof songImage === "string" ? songImage : songImage.secure_url, audioUrl: typeof songAudio === "string" ? songAudio : songAudio.secure_url });
+    }
+    res.json({ success: true, message: "Album updated successfully" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ success: false, message: "An error occurred while updating the album" });
+  }
+}
+
+export { createSong, createAlbum, updateSong, deleteSong, deleteAlbum, updateAlbum };
