@@ -3,6 +3,8 @@ import SearchedSong from "../components/SearchedSong";
 import { AppContext } from "../global/AppContext";
 import axios from "axios";
 import SearchResult from "../components/SearchResult";
+import UploadAudio from "../components/UploadAudio";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 
 const genres = [
   "K-Pop",
@@ -20,10 +22,11 @@ const genres = [
 const SearchScreen = () => {
   const [songs, setSongs] = useState([]);
   const [songsByGenre, setSongByGenre] = useState([]);
+  const [showAudioSearch, setShowAudioSearch] = useState(false);
   const { userId } = useContext(AppContext);
   const [_, setIsSearchOpen] = useState(false);
   const inputRef = useRef(null);
-  
+
   useEffect(() => {
     const fetchRecentSearch = async () => {
       try {
@@ -72,7 +75,24 @@ const SearchScreen = () => {
   };
 
   return (
-    <div className="w-screen h-[88%] px-10 flex flex-col overflow-hidden">
+    <div className="w-screen h-[88%] px-10 flex flex-col overflow-y-auto scrollbar-hide">
+      <div
+        className="flex flex-row gap-5 items-center cursor-pointer text-white mb-2"
+        onClick={() => setShowAudioSearch((prev) => !prev)}
+      >
+        <h2 className="font-bold text-xl">Explore More Song by Audio</h2>
+        {showAudioSearch ? (
+          <IoIosArrowUp className="transition-transform size-5" />
+        ) : (
+          <IoIosArrowDown className="transition-transform size-5" />
+        )}
+      </div>
+      {showAudioSearch && (
+        <div className="transition-all duration-300 ease-in-out">
+          <UploadAudio />
+        </div>
+      )}
+      {/* Search by Genre */}
       <h2 className="text-white font-bold text-xl mb-4">Genre</h2>
       <div className="flex flex-col">
         <div ref={inputRef} className="flex flex-wrap gap-4">
@@ -97,7 +117,7 @@ const SearchScreen = () => {
           </div>
         )}
       </div>
-
+      {/* Search by Song Name */}
       <div className="flex flex-row justify-between items-center w-[75%] mt-10 mb-4">
         <span className="text-white font-bold text-xl">Recent Search</span>
         <button
@@ -110,7 +130,7 @@ const SearchScreen = () => {
           Clear All
         </button>
       </div>
-      <div className="py-2 overflow-y-auto flex-grow">
+      <div className="py-2 min-h-min overflow-y-auto flex-grow">
         {songs.map((_, index) => (
           <SearchedSong
             key={index}

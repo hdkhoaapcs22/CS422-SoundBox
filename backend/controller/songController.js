@@ -3,6 +3,10 @@ import listeningHistoryModel from "../models/listeningHistoryModel.js";
 import songPlayModel from "../models/songPlayModel.js";
 import favoriteSongModel from "../models/favouriteSongModel.js";
 import mongoose from "mongoose";
+import FormData from "form-data";
+import fs from "fs";
+import axios from "axios";
+
 export const getNewReleases = async (limit = 20) => {
   try {
     return await Song.find().sort({ createdAt: -1 }).limit(limit);
@@ -155,20 +159,13 @@ export const addPlayCount = (req, res) => {
 
   const today = new Date().toISOString().split("T")[0];
   const key = `${songID}_${today}`;
-  // console.log("Play count key:", key);
 
   if (!playCountCache[key]) {
     playCountCache[key] = 0;
   }
 
   playCountCache[key] += 1;
-  // console.log("Play count cache: ", playCountCache);
-  // console.log(
-  //   "Play count cache updated for key:",
-  //   key,
-  //   "New count:",
-  //   playCountCache[key]
-  // );
+
   res
     .status(200)
     .json({ success: true, message: "Play count updated in cache" });
@@ -182,10 +179,6 @@ const flushPlayCountsToDB = async () => {
     if (count > 0) {
       const [songID, dateStr] = key.split("_");
       const date = new Date(dateStr);
-      // const underscoreIndex = key.indexOf("_");
-      // const songID = key.slice(0, underscoreIndex);
-      // const dateStr = key.slice(underscoreIndex + 1);
-      // const date = new Date(dateStr);
       date.setHours(0, 0, 0, 0);
 
       await songPlayModel.findOneAndUpdate(
@@ -196,7 +189,6 @@ const flushPlayCountsToDB = async () => {
     }
   }
 
-  // console.log("Play counts saved to database:", playCountCache);
   playCountCache = {};
 };
 
@@ -414,8 +406,8 @@ export const getMonthlyTopOneHit = async (req, res) => {
           title: 1,
           "artist.name": 1,
           "artist.avatarUrl": 1,
-        }
-      }
+        },
+      },
     ]);
     res.status(200).json({ success: true, data: result });
   } catch (err) {
@@ -426,18 +418,17 @@ export const getMonthlyTopOneHit = async (req, res) => {
       error: err.message,
     });
   }
-}
-
+};
 
 export const getTopListenedSongOfUser = async (req, res) => {
   try {
     const now = new Date();
-    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1); // First day of the current month
-    const {listenerId} = req.query;
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+    const { listenerId } = req.query;
     const result = await listeningHistoryModel.aggregate([
       {
         $match: {
-          playedAt: { $gte: startOfMonth }, 
+          playedAt: { $gte: startOfMonth },
           listenerID: new mongoose.Types.ObjectId(listenerId),
         },
       },
@@ -460,11 +451,11 @@ export const getTopListenedSongOfUser = async (req, res) => {
       { $unwind: "$song" },
       {
         $addFields: {
-          "song.totalPlays": "$totalPlays", // Add totalPlays to the song details
+          "song.totalPlays": "$totalPlays",
         },
       },
       {
-        $replaceRoot: { newRoot: "$song" }, // Replace the root with the song data
+        $replaceRoot: { newRoot: "$song" },
       },
     ]);
 
@@ -476,5 +467,60 @@ export const getTopListenedSongOfUser = async (req, res) => {
       message: "Failed to get top song of the month",
       error: err.message,
     });
+  }
+};
+
+{
+  /* Song recognization */
+}
+export const identifySong = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ error: "No file uploaded." });
+    }
+
+    const formData = new FormData();
+    formData.append("file", fs.createReadStream(req.file.path));
+    formData.append("api_token", process.env.AUDD_API_TOKEN);
+    formData.append("return", "apple_music,spotify");
+
+    const response = await axios.post("https://api.audd.io/", formData, {
+      headers: formData.getHeaders(),
+    });
+
+    // console.log("AudD Response:", response.data);
+
+    fs.unlinkSync(req.file.path);
+
+    if (response.data.status !== "success") {
+      return res.status(500).json({
+        error: response.data.error?.error_message || "AudD API failed.",
+      });
+    }
+
+    // res.json(response.data);
+
+    const identifiedSong = response.data.result;
+
+    if (!identifiedSong) {
+      return res.status(404).json({ error: "No song identified." });
+    }
+
+    const { artist, title } = identifiedSong;
+
+    // Now find in your database
+    const song = await Song.findOne({
+      name: new RegExp(`^${artist}$`, "i"), // match artist name case-insensitively
+      title: new RegExp(`^${title}$`, "i"), // match song title case-insensitively
+    });
+
+    if (!song) {
+      return res.status(404).json({ error: "Song not found in database." });
+    }
+
+    res.json(song);
+  } catch (error) {
+    console.error("Internal Error:", error.response?.data || error.message);
+    res.status(500).json({ error: "Failed to identify song." });
   }
 };

@@ -73,7 +73,7 @@ const NewAlbum = ({ onAlbumSelect }) => {
         </div>
       </div>
 
-      {/* Song Cards */}
+      {/* Album Cards */}
       <div className="overflow-hidden relative">
         <div
           className="flex transition-transform duration-500 ease-in-out"
