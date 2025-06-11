@@ -38,7 +38,8 @@ const BannerDashboard = () => {
         <img
           src={banners[currentIndex].image}
           alt="Banner"
-          className="h-[200px] object-cover rounded-lg"/>
+          className="h-[200px] object-cover rounded-lg"
+        />
         <img
           src={assets.right_arrow_button}
           alt="Next"

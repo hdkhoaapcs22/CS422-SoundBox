@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import FormData from "form-data";
 import fs from "fs";
 import axios from "axios";
+import crypto from "crypto";
 
 export const getNewReleases = async (limit = 20) => {
   try {
@@ -473,46 +474,143 @@ export const getTopListenedSongOfUser = async (req, res) => {
 {
   /* Song recognization */
 }
+// export const identifySong = async (req, res) => {
+//   try {
+//     if (!req.file) {
+//       return res.status(400).json({ error: "No file uploaded." });
+//     }
+
+//     const formData = new FormData();
+//     formData.append("file", fs.createReadStream(req.file.path));
+//     formData.append("api_token", process.env.AUDD_API_TOKEN);
+//     console.log("AudD API Token:", process.env.AUDD_API_TOKEN);
+//     formData.append("return", "apple_music,spotify");
+
+//     const response = await axios.post("https://api.audd.io/", formData, {
+//       headers: formData.getHeaders(),
+//     });
+
+//     console.log("AudD Response:", response.data);
+
+//     fs.unlinkSync(req.file.path);
+
+//     if (response.data.status !== "success") {
+//       return res.status(500).json({
+//         error: response.data.error?.error_message || "AudD API failed.",
+//       });
+//     }
+
+//     // res.json(response.data);
+
+//     const identifiedSong = response.data.result;
+
+//     if (!identifiedSong) {
+//       return res.status(404).json({ error: "No song identified." });
+//     }
+
+//     const { artist, title } = identifiedSong;
+
+//     // Now find in your database
+//     const song = await Song.findOne({
+//       name: new RegExp(`^${artist}$`, "i"), // match artist name case-insensitively
+//       title: new RegExp(`^${title}$`, "i"), // match song title case-insensitively
+//     });
+
+//     if (!song) {
+//       return res.status(404).json({ error: "Song not found in database." });
+//     }
+
+//     res.json(song);
+//   } catch (error) {
+//     console.error("Internal Error:", error.response?.data || error.message);
+//     res.status(500).json({ error: "Failed to identify song." });
+//   }
+// };
+
+const ACR_OPTIONS = {
+  host: "identify-ap-southeast-1.acrcloud.com", // or your actual endpoint
+  endpoint: "/v1/identify",
+  signature_version: "1",
+  data_type: "audio",
+  access_key: process.env.ACR_ACCESS_KEY,
+  access_secret: process.env.ACR_ACCESS_SECRET,
+};
+
+const buildStringToSign = (
+  method,
+  uri,
+  accessKey,
+  dataType,
+  signatureVersion,
+  timestamp
+) => {
+  return [method, uri, accessKey, dataType, signatureVersion, timestamp].join(
+    "\n"
+  );
+};
+
+const sign = (signString, accessSecret) => {
+  return crypto
+    .createHmac("sha1", accessSecret)
+    .update(Buffer.from(signString, "utf-8"))
+    .digest("base64");
+};
+
 export const identifySong = async (req, res) => {
   try {
-    if (!req.file) {
-      return res.status(400).json({ error: "No file uploaded." });
-    }
+    if (!req.file) return res.status(400).json({ error: "No audio uploaded." });
 
-    const formData = new FormData();
-    formData.append("file", fs.createReadStream(req.file.path));
-    formData.append("api_token", process.env.AUDD_API_TOKEN);
-    formData.append("return", "apple_music,spotify");
+    const buffer = fs.readFileSync(req.file.path);
+    const timestamp = Math.floor(Date.now() / 1000);
+    const stringToSign = buildStringToSign(
+      "POST",
+      ACR_OPTIONS.endpoint,
+      ACR_OPTIONS.access_key,
+      ACR_OPTIONS.data_type,
+      ACR_OPTIONS.signature_version,
+      timestamp
+    );
+    const signature = sign(stringToSign, ACR_OPTIONS.access_secret);
 
-    const response = await axios.post("https://api.audd.io/", formData, {
-      headers: formData.getHeaders(),
+    const form = new FormData();
+    form.append("sample", buffer, {
+      filename: "sample.wav",
+      contentType: "audio/wav",
     });
+    form.append("sample_bytes", buffer.length);
+    form.append("access_key", ACR_OPTIONS.access_key);
+    form.append("data_type", ACR_OPTIONS.data_type);
+    form.append("signature_version", ACR_OPTIONS.signature_version);
+    form.append("signature", signature);
+    form.append("timestamp", timestamp);
 
-    // console.log("AudD Response:", response.data);
+    const response = await axios.post(
+      `https://${ACR_OPTIONS.host}${ACR_OPTIONS.endpoint}`,
+      form,
+      {
+        headers: form.getHeaders(),
+      }
+    );
 
     fs.unlinkSync(req.file.path);
 
-    if (response.data.status !== "success") {
-      return res.status(500).json({
-        error: response.data.error?.error_message || "AudD API failed.",
-      });
+    const musicMetadata = response.data.metadata?.music?.[0];
+
+    if (!musicMetadata) {
+      return res.status(404).json({ error: "No match found from ACRCloud." });
     }
 
-    // res.json(response.data);
-
-    const identifiedSong = response.data.result;
-
-    if (!identifiedSong) {
-      return res.status(404).json({ error: "No song identified." });
-    }
-
-    const { artist, title } = identifiedSong;
-
-    // Now find in your database
+    const title = musicMetadata.title;
+    const artist = musicMetadata.artists[0]?.name;
+    console.log("Identified Title:", title);
+    console.log("Identified Artist:", artist);
+    // Find the song in your database
     const song = await Song.findOne({
-      name: new RegExp(`^${artist}$`, "i"), // match artist name case-insensitively
-      title: new RegExp(`^${title}$`, "i"), // match song title case-insensitively
+      title: { $regex: new RegExp(title, "i") },
+      name: { $regex: new RegExp(artist, "i") },
     });
+
+    console.log("Identified Song:", song);
 
     if (!song) {
       return res.status(404).json({ error: "Song not found in database." });
@@ -520,7 +618,11 @@ export const identifySong = async (req, res) => {
 
     res.json(song);
   } catch (error) {
-    console.error("Internal Error:", error.response?.data || error.message);
-    res.status(500).json({ error: "Failed to identify song." });
+    console.error(
+      "ACR Identify Error:",
+      error?.response?.data || error.message
+    );
+    if (req.file && fs.existsSync(req.file.path)) fs.unlinkSync(req.file.path);
+    res.status(500).json({ error: "ACRCloud recognition failed." });
   }
 };

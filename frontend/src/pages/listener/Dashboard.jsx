@@ -8,7 +8,7 @@ const Dashboard = () => {
   return (
     <div className="w-screen h-[88%] flex flex-row overflow-hidden">
       <div className="w-[60%] h-full overflow-y-auto scrollbar-hide">
-        <BannerDashboard />
+        {/* <BannerDashboard /> */}
         <RecentlyPlayed />
         <NewRelease />
       </div>

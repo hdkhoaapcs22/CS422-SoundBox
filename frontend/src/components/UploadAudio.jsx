@@ -52,13 +52,18 @@ const UploadAudio = () => {
 
   const handleUpload = async () => {
     const uploadFile = file || recordedBlob;
+    
     if (!uploadFile) {
       alert("Please select or record a file first!");
       return;
     }
 
+    const fileToSend = new File([uploadFile], "recorded_audio.wav", {
+      type: "audio/wav", // or "audio/webm" if backend handles it
+    });
+
     const formData = new FormData();
-    formData.append("file", uploadFile, "recorded_audio.webm");
+    formData.append("file", fileToSend);
 
     setLoading(true);
 

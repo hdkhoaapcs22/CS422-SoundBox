@@ -91,7 +91,6 @@ const createAlbum = async (req, res) => {
   try {
     const { albumTitle, id } = req.body;
     const { title, genre, duration, collaborators } = req.body.songs;
-    console.log("colla: ", collaborators);
 
     const songAudios = req.files["songs[audio]"];
     const songImages = req.files["songs[image]"];

@@ -32,7 +32,7 @@ const SongList = ({ title, songs }) => {
 
   useEffect(() => {
     const fetchFavorites = async () => {
-      if (!userId || songs.length === 0) return;
+      if (!userId || !songs || songs.length === 0) return;
 
       try {
         const favorites = await getFavoriteSongs(userId);
@@ -44,7 +44,7 @@ const SongList = ({ title, songs }) => {
         const initialLikedStatus = {};
 
         songs.forEach((song) => {
-          initialLikes[song._id] = song.likes;
+          initialLikes[song._id] = song.likes || 0;
           initialLikedStatus[song._id] = favoriteSongIds.has(song._id);
         });
 
