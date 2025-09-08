@@ -1,30 +1,53 @@
 # CS422-SoundBox
+## 🎵 Soundbox
 
-### Run the project
+Soundbox is a **music streaming platform** designed to provide an enjoyable and seamless listening experience for music lovers.  
+It offers a **vast library of songs, albums, playlists**, all available for streaming on-demand.  
 
-To run the backend server, use: **`npm run server`**. Run backend first.
+With a user-friendly interface, robust backend, and support for both listeners and artists, Soundbox aims to become an **all-in-one platform for music lovers, creators, and music industry professionals**.
 
-To run the frontend, artist, and admin, use **`npm run dev`**.
+---
 
-### Components
+## 🚀 Features
 
-The project has two big problems, but it's optional to fix.
-- It's not reponsive app, but we can fix by using Reponsive design in **TailwindCss** like **sm:flex**, **md:text-center** for example(take much time b/c have to re-design the layout to respond to its size)
-- Reloading will make the side bar wrong because the **role** and **userId** are reseted and lost data. In my opinion, this flaw can be solved by storing these variables in the local storage of the website but you can address by your method.
+### 👤 Listener
+- Stream music anytime, anywhere.  
+- Create and manage personal playlists.  
+- Search for music by **audio recognition** (powered by [ACRCloud API](https://www.acrcloud.com/)).  
+- Stay updated with the latest music trends.  
+- Follow favorite artists.  
 
-**`SideBar`**: the side bar of three roles. It has a logic to gender the side bar for each role. **It has an error**
+### 🎤 Artist
+- Upload and manage songs & albums.  
+- Showcase music to a global audience.  
+- Track and manage their music catalog.  
 
-**`Navbar`**: the top bar in home page
+### 🛠️ Admin
+- Validate new songs and albums before publishing.  
+- Create and manage artist accounts.  
 
-**`Footer`**: the footer in home page
+---
 
-**`ShortUserInfo`**: the user information that is in the top right when logined in
+## 🏗️ Tech Stack
+- **Frontend**: React.js, TailwindCSS  
+- **Backend**: Node.js
+- **Database**: MongoDB
+- **APIs & Services**:  
+  - [ACRCloud](https://www.acrcloud.com/) – music recognition.  
 
-**`AppTitle`**: It has the SoundBox logo and the app title.
+---
 
-**`Input`**: input field
+## 📦 Installation & Setup
+```bash
+# Clone the repository
+git clone https://github.com/your-username/soundbox.git
+cd soundbox
 
+# Install dependencies
+npm install
 
+# Run the backend server (must start first)
+npm run server
 
-
-
+# Run the frontend (listener, artist, admin)
+npm run dev
